@@ -2,8 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv'
 import cors from 'cors'
 import connectDB from './src/config/db.js';
-import productRouter from './src//routes/productRoutes.js'
-import userRouter from './src//routes/userRoutes.js'
+import productRouter from './src/routes/productRoutes.js'
+import userRouter from './src/routes/userRoutes.js'
+import saleRouter from './src/routes/saleRoutes.js'
 const app = express();
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 app.use('/api/product',productRouter)
 app.use('/api/auth',userRouter)
+app.use('/api/sale',saleRouter)
 
 
 

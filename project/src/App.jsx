@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -24,6 +24,15 @@ function App() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  useEffect(()=>{
+    if(user?.role === 'admin'){
+      document.title = 'POS Admin Dashboard'
+    } else if(user?.role === 'staff'){
+      document.title = 'POS Staff Dashboard'
+    }else{
+      document.title = 'POS Login'
+    }
+  },[user?.role])
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -45,7 +54,7 @@ function App() {
 
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
               <Route path="/users" element={<Users />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/settings" element={<Settings />} />  
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

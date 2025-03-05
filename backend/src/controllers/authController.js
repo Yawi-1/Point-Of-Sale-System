@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { Query } from "mongoose";
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "24h" });
@@ -146,5 +147,17 @@ export const checkAuth = async(req,res)=>{
       message: error.message,
       success: false
     })
+  }
+}
+
+export const getAllUsers = async(req,res)=>{
+  try {
+    const loggedInUser = req?.user?.id;
+    const users = await User.find({_id:{$ne:loggedInUser}}).select('-password');
+    res.status(200).json({message:"All users",success:true,data:users});
+  } catch (error) {
+    console.error("Get all users error:", error);
+    res.status(400).json({message:error.message,success:false})
+    
   }
 }
