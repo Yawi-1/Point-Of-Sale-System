@@ -152,8 +152,8 @@ export const checkAuth = async(req,res)=>{
 
 export const getAllUsers = async(req,res)=>{
   try {
-    const loggedInUser = req?.user?.id;
-    const users = await User.find({_id:{$ne:loggedInUser}}).select('-password');
+    
+    const users = await User.find().select('-password');
     res.status(200).json({message:"All users",success:true,data:users});
   } catch (error) {
     console.error("Get all users error:", error);
