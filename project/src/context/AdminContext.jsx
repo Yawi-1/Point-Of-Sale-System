@@ -24,6 +24,9 @@ export const AdminProvider = ({ children }) => {
   useEffect(() => {
     fetchAllusers();
   }, []);
+
+
+ 
   return (
     <AdminContext.Provider
       value={{

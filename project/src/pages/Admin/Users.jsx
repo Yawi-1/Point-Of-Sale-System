@@ -40,7 +40,7 @@ const Users = () => {
           <p className="text-gray-500">Manage system users and permissions</p>
         </div>
         <div className="mt-4 md:mt-0">
-          <button onClick={()=>alert('true')} className="flex items-center justify-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-700 transition-colors">
+          <button onClick={()=>setShowModal(true)} className="flex items-center justify-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-700 transition-colors">
             <FaPlus className="mr-2" />
             Add New User
           </button>

@@ -31,7 +31,6 @@ const StaffTopbar = () => {
         <Link to="/" className="hover:text-gray-400">Dashboard</Link>
         <Link to="/sales" className="hover:text-gray-400">Sales</Link>
         <Link to="/inventory" className="hover:text-gray-400">Inventory</Link>
-        <Link to="/history" className="hover:text-gray-400">History</Link>
         <button className="hover:text-gray-400" onClick={logout}>Log out</button>
       </div>
 

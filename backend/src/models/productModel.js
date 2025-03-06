@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
     productImage: {
-      type: String, // Change from array to a single string
+      type: String, 
       required: true,
     },
     productDescription: {
@@ -27,6 +27,11 @@ const productSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    productQuantity:{
+      type:Number,
+      required:true,
+      min:0
+    }
   },
   {
     timestamps: true,

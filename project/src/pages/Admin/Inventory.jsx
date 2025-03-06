@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { FaPlus, FaSearch, FaFilter } from 'react-icons/fa';
 import InventoryTable from '../../components/InventoryTable';
-
+import AddProductModal from '../../components/AddProductModal';
 const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [stockFilter, setStockFilter] = useState('all');
+  const [showAddModal,setShowAddModal] = useState(false)
   
   // Sample data for products
   const allProducts = [
@@ -143,7 +144,7 @@ const Inventory = () => {
             <FaFilter className="mr-2" />
             Filter
           </button>
-          <button className="flex items-center justify-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-700 transition-colors">
+          <button onClick={()=>setShowAddModal(true)} className="flex items-center justify-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-700 transition-colors">
             <FaPlus className="mr-2" />
             Add Product
           </button>
@@ -249,6 +250,10 @@ const Inventory = () => {
         products={filteredProducts} 
         onEdit={handleEdit} 
         onDelete={handleDelete} 
+      />
+      <AddProductModal
+      isOpen={showAddModal}
+      onClose={()=>setShowAddModal(false)}
       />
     </div>
   );

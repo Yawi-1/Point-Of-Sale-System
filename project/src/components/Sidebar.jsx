@@ -7,7 +7,6 @@ import {
   FaBoxes,
   FaCog,
   FaSignOutAlt,
-  FaHistory
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 const Sidebar = ({ isOpen }) => {
@@ -27,11 +26,6 @@ const Sidebar = ({ isOpen }) => {
       path: "/settings",
       name: "Settings",
       icon: <FaCog size={20} />,
-    },
-    {
-      path: "/history",
-      name: "History",
-      icon: <FaHistory size={20} />,
     },
   ];
 

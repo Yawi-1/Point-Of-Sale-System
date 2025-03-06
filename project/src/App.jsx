@@ -49,14 +49,8 @@ function App() {
               <Route path="/" element={user?.role === 'admin' ? <Dashboard /> : <StaffDashboard />} />
               <Route path="/sales" element={user?.role === 'admin' ? <Sales /> : <StaffSales />} />
               <Route path="/inventory" element={user?.role === 'admin' ? <Inventory /> : <StaffInventory />} />
-              <Route path="/history" element={user?.role === 'admin' ? <History /> : <StaffHistory />} />
+              <Route path="/users" element={user?.role === 'admin' && <Users />} />
             </Route>
-
-            <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-              <Route path="/users" element={<Users />} />
-              <Route path="/settings" element={<Settings />} />  
-            </Route>
-
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
