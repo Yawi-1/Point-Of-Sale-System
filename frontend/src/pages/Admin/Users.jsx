@@ -6,7 +6,7 @@ import {useAdmin} from '../../context/AdminContext'
 
 const Users = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const {allUsers} = useAdmin();
+  const {allUsers,loading} = useAdmin();
   const [showModal,setShowModal] = useState(false)
   
 
@@ -86,6 +86,7 @@ const Users = () => {
       </div>
       
       {/* Users Table */}
+      {loading && <p>Loading ....</p>}
       <UsersTable 
         users={filteredUsers} 
         onEdit={handleEdit} 

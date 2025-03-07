@@ -3,7 +3,7 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { productName, productPrice, productDescription, productCategory, productURL } = req.body;
+    const { productName, productPrice, productDescription, productCategory, productURL,productQuantity } = req.body;
     const file = req.file; // Accept only a single file
 
     // Check if product URL already exists
@@ -29,11 +29,12 @@ export const addProduct = async (req, res) => {
       productPrice,
       productDescription,
       productCategory,
+      productQuantity,
       productImage: imageUrl, // Store the single image URL
       productURL,
     });
 
-    res.status(201).json({ product, message: "New Product Added Successfully", success: true });
+    res.status(201).json({ data:product, message: "New Product Added Successfully", success: true });
 
   } catch (error) {
     res.status(500).json({ message: error.message, success: false });
@@ -48,7 +49,7 @@ export const getAllProducts = async(req,res)=>{
         if(!allProducts){
             return res.status(404).json({message:'No Products Found',success:false});
         }
-        res.status(200).json({products : allProducts, message : 'All Products Retrieved Successfully.......',success:true})
+        res.status(200).json({data : allProducts, message : 'All Products Retrieved Successfully.......',success:true})
     } catch (error) {
         res.status(401).json({message:error.message,success:false})
     }

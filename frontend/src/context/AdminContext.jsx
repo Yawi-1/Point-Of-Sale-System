@@ -1,39 +1,31 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import React, { createContext, useContext, useEffect, useState, useMemo } from "react";
+import useFetch from "../hooks/useFetch";
+
 const AdminContext = createContext(null);
 
 export const AdminProvider = ({ children }) => {
+  const token = localStorage.getItem('token');
   const [allUsers, setAllUsers] = useState([]);
-  const fetchAllusers = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/api/auth/allUsers",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      const data = response.data.data;
-      setAllUsers(data);
-    } catch (error) {
-      console.error("Error at fetching all users : ", error);
-    }
-  };
+  const [allProducts,setAllProducts] = useState([])
+  // Memoize options to prevent infinite re-fetch
+  const options = useMemo(() => ({}), []);
+
+  const { data:users, error, loading } = useFetch("http://localhost:3000/api/auth/allUsers", options, token);
+  const {data:products} = useFetch('http://localhost:3000/api/product/all',options)
+  const addProduct = (product)=>{
+    setAllProducts((prev)=>([...allProducts,product]))
+  }
   useEffect(() => {
-    fetchAllusers();
-  }, []);
+    if (users) {
+      setAllUsers(users);
+    }
+    if(products){
+      setAllProducts(products)
+    }
+  }, [users,products]); // Update allUsers when data changes
 
-
- 
   return (
-    <AdminContext.Provider
-      value={{
-        allUsers,
-        fetchAllusers,
-      }}
-    >
+    <AdminContext.Provider value={{ allUsers,allProducts, error, loading,addProduct }}>
       {children}
     </AdminContext.Provider>
   );

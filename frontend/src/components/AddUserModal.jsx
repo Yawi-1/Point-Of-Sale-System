@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const AddUserModal = ({ isOpen, onClose }) => {
+  const [isAdding,setIsAdding] = useState(false)
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -16,17 +17,27 @@ const AddUserModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!userData.name || !userData.email || !userData.password || !userData.role){
+      alert("Please fill all fields");
+      return;
+    }
     try {
-      if(!userData.name || !userData.email || !userData.password || !userData.role){
-        alert("Please fill all fields");
-        return;
-      }
+      setIsAdding(true)
       const response = await axios.post('http://localhost:3000/api/auth/register', userData);
-      if(response.data.succees){
+      if(response.data.success){
         alert(response?.data?.message)
+        setUserData({
+          name: "",
+          email: "",
+          password: "",
+          role: "",
+        })
+        setTimeout(()=>{onClose()},2000)
       }
     } catch (error) {
       alert(error.response.data.message);
+    } finally{
+      setIsAdding(false)
     }
   };
 
@@ -127,10 +138,11 @@ const AddUserModal = ({ isOpen, onClose }) => {
               Cancel
             </button>
             <button
+              disabled={isAdding}
               type="submit"
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
             >
-              Add User
+              {isAdding ? <div className="flex gap-x-2 "><span className="animate-pulse">Adding...</span> <div className="h-6 w-6 rounded-full border-2 p-2 border-dashed border-white  animate-spin "></div> </div>:"Add User"} 
             </button>
           </div>
         </form>

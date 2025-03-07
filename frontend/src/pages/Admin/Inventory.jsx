@@ -2,91 +2,17 @@ import React, { useState } from 'react';
 import { FaPlus, FaSearch, FaFilter } from 'react-icons/fa';
 import InventoryTable from '../../components/InventoryTable';
 import AddProductModal from '../../components/AddProductModal';
+import { useAdmin } from '../../context/AdminContext';
 const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [stockFilter, setStockFilter] = useState('all');
   const [showAddModal,setShowAddModal] = useState(false)
-  
-  // Sample data for products
-  const allProducts = [
-    { 
-      id: 1, 
-      name: 'Smartphone X', 
-      sku: 'SM-X001', 
-      category: 'Electronics', 
-      price: 799.99, 
-      stock: 25,
-      image: 'https://ui-avatars.com/api/?name=SM&background=0D8ABC&color=fff'
-    },
-    { 
-      id: 2, 
-      name: 'Laptop Pro', 
-      sku: 'LP-P002', 
-      category: 'Electronics', 
-      price: 1299.99, 
-      stock: 12,
-      image: 'https://ui-avatars.com/api/?name=LP&background=4F46E5&color=fff'
-    },
-    { 
-      id: 3, 
-      name: 'Wireless Headphones', 
-      sku: 'WH-003', 
-      category: 'Electronics', 
-      price: 149.99, 
-      stock: 30,
-      image: 'https://ui-avatars.com/api/?name=WH&background=10B981&color=fff'
-    },
-    { 
-      id: 4, 
-      name: 'Cotton T-Shirt', 
-      sku: 'CTS-004', 
-      category: 'Clothing', 
-      price: 19.99, 
-      stock: 100,
-      image: 'https://ui-avatars.com/api/?name=CT&background=F59E0B&color=fff'
-    },
-    { 
-      id: 5, 
-      name: 'Denim Jeans', 
-      sku: 'DJ-005', 
-      category: 'Clothing', 
-      price: 49.99, 
-      stock: 45,
-      image: 'https://ui-avatars.com/api/?name=DJ&background=EF4444&color=fff'
-    },
-    { 
-      id: 6, 
-      name: 'Coffee Maker', 
-      sku: 'CM-006', 
-      category: 'Appliances', 
-      price: 89.99, 
-      stock: 8,
-      image: 'https://ui-avatars.com/api/?name=CM&background=8B5CF6&color=fff'
-    },
-    { 
-      id: 7, 
-      name: 'Blender', 
-      sku: 'BL-007', 
-      category: 'Appliances', 
-      price: 59.99, 
-      stock: 15,
-      image: 'https://ui-avatars.com/api/?name=BL&background=EC4899&color=fff'
-    },
-    { 
-      id: 8, 
-      name: 'Fitness Tracker', 
-      sku: 'FT-008', 
-      category: 'Electronics', 
-      price: 79.99, 
-      stock: 0,
-      image: 'https://ui-avatars.com/api/?name=FT&background=14B8A6&color=fff'
-    },
-  ];
+  const {allProducts} = useAdmin();
 
   // Get unique categories for filter dropdown
-  const categories = ['all', ...new Set(allProducts.map(product => product.category))];
+  const categories = ['all', ...new Set(allProducts.map(product => product.productCategory))];
 
   // Filter products based on search term and filters
   const filteredProducts = allProducts.filter(product => {
@@ -94,24 +20,24 @@ const Inventory = () => {
     
     // Search filter
     if (
-      !product.name.toLowerCase().includes(searchLower) &&
-      !product.sku.toLowerCase().includes(searchLower) &&
-      !product.category.toLowerCase().includes(searchLower)
+      !product.productName.toLowerCase().includes(searchLower) &&
+      !product.productURL.toLowerCase().includes(searchLower) &&
+      !product.productCategory.toLowerCase().includes(searchLower)
     ) {
       return false;
     }
     
     // Category filter
-    if (categoryFilter !== 'all' && product.category !== categoryFilter) {
+    if (categoryFilter !== 'all' && product.productCategory !== categoryFilter) {
       return false;
     }
     
     // Stock filter
-    if (stockFilter === 'instock' && product.stock <= 0) {
+    if (stockFilter === 'instock' && product.productQuantity <= 0) {
       return false;
-    } else if (stockFilter === 'lowstock' && (product.stock <= 0 || product.stock > 10)) {
+    } else if (stockFilter === 'lowstock' && (product.productQuantity <= 0 || product.productQuantity > 10)) {
       return false;
-    } else if (stockFilter === 'outofstock' && product.stock > 0) {
+    } else if (stockFilter === 'outofstock' && product.productQuantity > 0) {
       return false;
     }
     
@@ -227,13 +153,13 @@ const Inventory = () => {
           <div>
             <h3 className="text-sm font-medium text-gray-500">Out of Stock</h3>
             <p className="text-2xl font-semibold text-gray-800">
-              {allProducts.filter(product => product.stock <= 0).length}
+              {allProducts.filter(product => product.productQuantity <= 0).length}
             </p>
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-500">Low Stock</h3>
             <p className="text-2xl font-semibold text-gray-800">
-              {allProducts.filter(product => product.stock > 0 && product.stock <= 10).length}
+              {allProducts.filter(product => product.productQuantity > 0 && product.productQuantity <= 10).length}
             </p>
           </div>
           <div>

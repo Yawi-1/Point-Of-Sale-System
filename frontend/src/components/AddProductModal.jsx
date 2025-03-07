@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-
+import { useAdmin } from "../context/AdminContext";
 const AddProductModal = ({ isOpen, onClose }) => {
+  const { addProduct } = useAdmin();
   const [productData, setProductData] = useState({
     productName: "",
     productPrice: "",
@@ -35,44 +36,52 @@ const AddProductModal = ({ isOpen, onClose }) => {
   };
 
   const validateForm = () => {
-    const { productName, productPrice, productDescription, productCategory, productURL, productQuantity, productImage } = productData;
+    const {
+      productName,
+      productPrice,
+      productDescription,
+      productCategory,
+      productURL,
+      productQuantity,
+      productImage,
+    } = productData;
+    console.log(productData);
 
-    if (!productName || !productPrice || !productDescription || 
-        !productCategory || !productURL || !productQuantity) {
+    if (
+      !productName ||
+      !productPrice ||
+      !productDescription ||
+      !productCategory ||
+      !productURL ||
+      !productQuantity
+    ) {
       setError("All fields are required.");
       return false;
     }
-    
+
     if (!productImage) {
       setError("Please upload a product image.");
       return false;
     }
-    
+
     if (isNaN(productPrice) || productPrice <= 0) {
       setError("Product price must be a positive number.");
       return false;
     }
-    
+
     if (isNaN(productQuantity) || productQuantity <= 0) {
       setError("Product quantity must be a positive number.");
       return false;
     }
-    
-    // Check if URL is valid
-    const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
-    if (!urlPattern.test(productURL)) {
-      setError("Please enter a valid URL.");
-      return false;
-    }
-
     setError(null);
     return true;
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("productName", productData.productName);
     formData.append("productPrice", productData.productPrice);
@@ -83,22 +92,32 @@ const AddProductModal = ({ isOpen, onClose }) => {
     formData.append("productImage", productData.productImage);
 
     try {
-      const response = await axios.post('http://localhost:3000/api/products', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      const response = await axios.post(
+        "http://localhost:3000/api/product/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
-      console.log(response.data);
-
-      setSuccessMessage("Product added successfully!");
-      setTimeout(() => {
-        setSuccessMessage(null);
-        resetForm();
-        onClose();
-      }, 2000);
+      );
+      if (response.data.success) {
+        setSuccessMessage("Product added successfully!");
+        addProduct(response.data.data);
+        setTimeout(() => {
+          setSuccessMessage(null);
+          resetForm();
+          onClose();
+        }, 2000);
+      }
     } catch (error) {
-      setError("There was an error adding the product: " + (error.response?.data?.message || error.message));
-      console.error("Error:", error.response.data.message);
+      setError(
+        "There was an error adding the product: " +
+          (error.response?.data?.message || error.message)
+      );
+      console.error("Error:", error.response);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -114,6 +133,7 @@ const AddProductModal = ({ isOpen, onClose }) => {
     });
     setPreviewImage("");
     if (fileInputRef.current) fileInputRef.current.value = "";
+    setError("");
   };
 
   useEffect(() => {
@@ -196,7 +216,7 @@ const AddProductModal = ({ isOpen, onClose }) => {
                       />
                     </svg>
                     <p className="pt-1 text-sm text-gray-600">
-                      {productData.productImage 
+                      {productData.productImage
                         ? productData.productImage.name
                         : "Click to upload image"}
                     </p>
@@ -258,7 +278,7 @@ const AddProductModal = ({ isOpen, onClose }) => {
               Product URL *
             </label>
             <input
-              type="url"
+              type="text"
               name="productURL"
               value={productData.productURL}
               onChange={handleChange}
@@ -287,15 +307,17 @@ const AddProductModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
+              className="px-6 py-2 text-gray-700 hover:bg-gray-200 bg-gray-300 rounded-md transition-colors duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors duration-200"
+              className="px-6 py-2 bg-blue-600 text-white hover:bg-blue-700
+            rounded-md transition-colors duration-200"
+              disabled={isSubmitting}
             >
-              Add Product
+              {isSubmitting ? <div className="flex gap-x-2 "><span className="animate-pulse">Adding...</span> <div className="h-6 w-6 rounded-full border-2 p-2 border-dashed border-white  animate-spin "></div> </div> : "Add Product"}
             </button>
           </div>
         </form>

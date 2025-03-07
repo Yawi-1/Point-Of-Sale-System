@@ -5,7 +5,6 @@ import {
   FaShoppingCart,
   FaUsers,
   FaBoxes,
-  FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
@@ -22,11 +21,7 @@ const Sidebar = ({ isOpen }) => {
       icon: <FaUsers size={20} />,
     },
     { path: "/inventory", name: "Inventory", icon: <FaBoxes size={20} /> },
-    {
-      path: "/settings",
-      name: "Settings",
-      icon: <FaCog size={20} />,
-    },
+   
   ];
 
   return (
