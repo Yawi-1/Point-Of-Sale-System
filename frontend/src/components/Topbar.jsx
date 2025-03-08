@@ -1,7 +1,8 @@
 import React from 'react';
 import { FaBars, FaBell, FaUser, FaSearch } from 'react-icons/fa';
-
+import { useAuth } from '../context/AuthContext';
 const Topbar = ({ toggleSidebar }) => {
+  const {user} = useAuth();
   return (
     <header className="bg-white shadow-sm h-16 flex items-center px-4">
       <button
@@ -36,7 +37,7 @@ const Topbar = ({ toggleSidebar }) => {
             alt="User"
             className="h-8 w-8 rounded-full"
           />
-          <span className="ml-2 text-sm font-medium text-gray-700 hidden md:block">Admin User</span>
+          <span className="ml-2 text-sm font-medium text-gray-700 hidden md:block">{user?.name}</span>
         </div>
       </div>
     </header>

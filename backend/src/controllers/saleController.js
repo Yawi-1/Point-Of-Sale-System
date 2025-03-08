@@ -1,5 +1,26 @@
 import Sale from "../models/salesModel.js";
+import dotenv from 'dotenv';
+import stripe from 'stripe'
+dotenv.config()
 
+const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
+ // Add Stripe payment gateway integration
+
+ export const stripePayment = async (req, res) => {
+  try {
+    const {amount} = req.body;
+    const paymentIntent = await stripeClient.paymentIntents.create({
+      amount:amount,
+      currency: 'inr',
+    });
+    res.status(200).json({clientSecret: paymentIntent.client_secret,message:"Client Secret sent Successfully...", success:true})
+  } catch (error) {
+    res.status(500).json({message: error.message, success:false})
+  }
+}
+
+
+// Sales Controllers....
 export const getAllSales = async (req, res) => {
   try {
     const sales = await Sale.find({});
@@ -15,15 +36,16 @@ export const getAllSales = async (req, res) => {
 
 export const addSales = async (req, res) => {
   try {
-    const { customerName, customerPhone, totalAmount, products } = req.body;
-    const staffId = req?.user?.id; // Assuming staffId comes from the authenticated user
-    console.log(products)
+    const { customerName, customerPhone, totalAmount, products, paymentId } = req.body;
+    const staffId = req?.user?.id; 
 
-    // Ensure all required fields are provided
     if (!customerName || !customerPhone || !totalAmount || !products) {
       return res
         .status(400)
         .json({ message: "Missing required fields..", success: false });
+    }
+    if(!paymentId){
+      return res.status(400).json({ message: "Payment ID is required", success: false});
     }
 
     // Create a new sale document
@@ -33,6 +55,7 @@ export const addSales = async (req, res) => {
       totalAmount,
       products,
       staff: staffId,
+      paymentId
     });
 
     // Save the sale to the database
@@ -60,3 +83,5 @@ export const getSalesByStaff = async(req,res)=>{
         console.log(error)
     }
 }
+
+ 

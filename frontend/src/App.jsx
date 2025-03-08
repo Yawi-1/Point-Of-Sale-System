@@ -16,8 +16,11 @@ import StaffSales from './pages/Staff/StaffSales';
 import StaffInventory from './pages/Staff/StaffInventory';
 import StaffTopbar from './pages/Staff/StaffTopbar';
 import StaffHistory from './pages/Staff/StaffHistory';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 function App() {
+  const stripePromise = loadStripe("pk_test_51QOighF2m1LCsEM5wmfGo2q4TRiJrlgi5gnCJLh5OCQLo2wOmXNQ0xNqwRWvIOnWh0772BDo8BPz8xxmTFEZ3uk400x6mAKNcP");
   const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -35,6 +38,7 @@ function App() {
   },[user?.role])
 
   return (
+    <Elements stripe={stripePromise}>
     <div className="flex h-screen bg-gray-100">
       {user?.role === 'admin' && <Sidebar isOpen={isSidebarOpen} />}
       
@@ -56,6 +60,7 @@ function App() {
         </main>
       </div>
     </div>
+    </Elements>
   );
 }
 

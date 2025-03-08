@@ -23,7 +23,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
     }
     try {
       setIsAdding(true)
-      const response = await axios.post('http://localhost:3000/api/auth/register', userData);
+      const response = await axios.post('http://localhost:5000/api/auth/register', userData);
       if(response.data.success){
         alert(response?.data?.message)
         setUserData({

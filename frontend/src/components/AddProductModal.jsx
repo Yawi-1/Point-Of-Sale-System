@@ -93,7 +93,7 @@ const AddProductModal = ({ isOpen, onClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/product/add",
+        "http://localhost:5000/api/product/add",
         formData,
         {
           headers: {

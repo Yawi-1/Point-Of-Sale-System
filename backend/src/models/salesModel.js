@@ -21,7 +21,8 @@ const salesSchema = new mongoose.Schema(
     totalAmount:{
         type:Number,
         required:true
-    }
+    },
+    paymentId:String
   },
   {
     timestamps: true,

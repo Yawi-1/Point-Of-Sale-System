@@ -8,11 +8,14 @@ import saleRouter from './src/routes/saleRoutes.js'
 const app = express();
 dotenv.config();
 
-const PORT = process.env.PORT || 8080 ;
+const PORT =  5000 ;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors({
+    origin: ['http://localhost:5173','http://localhost:5174'],
+  }));
+  
 app.use('/api/product',productRouter)
 app.use('/api/auth',userRouter)
 app.use('/api/sale',saleRouter)

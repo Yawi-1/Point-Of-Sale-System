@@ -10,8 +10,8 @@ export const AdminProvider = ({ children }) => {
   // Memoize options to prevent infinite re-fetch
   const options = useMemo(() => ({}), []);
 
-  const { data:users, error, loading } = useFetch("http://localhost:3000/api/auth/allUsers", options, token);
-  const {data:products} = useFetch('http://localhost:3000/api/product/all',options)
+  const { data:users, error, loading } = useFetch("http://localhost:5000/api/auth/allUsers", options, token);
+  const {data:products} = useFetch('http://localhost:5000/api/product/all',options)
   const addProduct = (product)=>{
     setAllProducts((prev)=>([...allProducts,product]))
   }
