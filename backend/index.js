@@ -13,8 +13,10 @@ const PORT =  5000 ;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ['http://localhost:5173','http://localhost:5174'],
-  }));
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
   
 app.use('/api/product',productRouter)
 app.use('/api/auth',userRouter)

@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useStaff } from "../../context/StaffContext";
+import { 
+  LockClosedIcon,
+  XMarkIcon,
+  ExclamationCircleIcon,
+  ArrowPathIcon 
+} from "@heroicons/react/24/outline";
 const Order = () => {
   const [customer, setCustomer] = useState({
     name: "",
@@ -10,7 +16,7 @@ const Order = () => {
   const [paymentError, setPaymentError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { selectedProducts, totalAmount } = useStaff();
+  const { selectedProducts,setSelectedProducts, totalAmount } = useStaff();
   
   const stripe = useStripe();
   const elements = useElements();
@@ -59,7 +65,6 @@ const Order = () => {
       });
   
       const data = await response.json();
-      console.log(data)
       const { clientSecret } = data;
   
       if (!clientSecret) {
@@ -115,6 +120,14 @@ const Order = () => {
     }
   };
   
+  const handleCancel = ()=>{
+     const response = confirm('Are you sure you want to cancel the order?');
+     if(response){
+      localStorage.removeItem('cartItems');
+      setSelectedProducts([]);
+      alert('Order canceled')
+     }
+  }
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm">
@@ -170,49 +183,92 @@ const Order = () => {
           </div>
         </div>
       </div>
-
       <button
         onClick={handleCheckOut}
-        className="bg-green-400 px-4 py-2 rounded-full float-right m-4 w-[30%] text-white hover:bg-white hover:border-2 hover:border-green-400 hover:text-green-400"
+        className="bg-green-400 px-4 py-2 rounded-full float-end  m-4 w-[30%] text-white hover:bg-white hover:border-2 hover:border-green-400 hover:text-green-400"
       >
         Checkout
       </button>
 
+      {selectedProducts.length > 0 && <button
+        onClick={handleCancel}
+        className="bg-red-400 px-4 py-2 rounded-full float-end m-4 w-[30%] text-white hover:bg-white hover:border-2 hover:border-red-400 hover:text-red-400"
+      >
+        Cancel
+      </button>}
+      
+
       {/* Payment Modal */}
       {showPaymentForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-[400px]">
-            <h3 className="text-xl font-semibold mb-4">Complete Payment</h3>
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+    <div className="bg-gradient-to-br from-blue-900 to-blue-600 p-8 rounded-2xl w-[480px] shadow-2xl text-white relative">
+      {/* Card-like decoration elements */}
+      <div className="absolute top-6 right-6 flex space-x-2 opacity-75">
+        <div className="w-12 h-8 bg-yellow-300 rounded-md" />
+        <div className="w-12 h-8 bg-gray-200 rounded-md" />
+      </div>
+      
+      <div className="mb-8">
+        <h3 className="text-2xl font-bold mb-2">Payment Gateway</h3>
+        <p className="opacity-80">Secure SSL encrypted payment</p>
+      </div>
 
-            {/* Show Error Message */}
-            {paymentError && (
-              <div className="bg-red-100 text-red-800 p-3 mb-4 rounded">
-                {paymentError}
-              </div>
-            )}
+      {/* Amount Display */}
+      <div className="bg-black/20 p-4 rounded-xl mb-6">
+        <div className="text-sm opacity-80">Total Amount</div>
+        <div className="text-3xl font-bold">₹{totalAmount}</div>
+      </div>
 
-            <div className="space-y-4">
-              {/* Stripe Card Element */}
-              <CardElement options={{ hidePostalCode: true }} />
-
-              <button
-                onClick={handleSubmitPayment}
-                disabled={!stripe || isSubmitting}
-                className="bg-blue-400 px-4 py-2 rounded-full w-full text-white hover:bg-white hover:border-2 hover:border-blue-400 hover:text-blue-400"
-              >
-                {isSubmitting ? "Processing..." : "Pay Now"}
-              </button>
-            </div>
-
-            <button
-              onClick={() => setShowPaymentForm(false)}
-              className="mt-4 w-full py-2 text-center text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300"
-            >
-              Close
-            </button>
-          </div>
+      {/* Error Message */}
+      {paymentError && (
+        <div className="flex items-center bg-red-100/20 p-3 mb-4 rounded-lg">
+          <ExclamationCircleIcon className="w-5 h-5 mr-2 text-red-300" />
+          <span className="text-red-300 text-sm">{paymentError}</span>
         </div>
       )}
+
+      {/* Card Input Section */}
+      <div className="space-y-6">
+        <div className="bg-white/10 p-4 rounded-xl">
+          <CardElement 
+            options={{
+              hidePostalCode: true,
+              style: {
+                base: {
+                  fontSize: '16px',
+                  color: '#ffffff',
+                  '::placeholder': { color: '#a0aec0' }
+                }
+              }
+            }}
+          />
+        </div>
+
+        {/* Payment Button */}
+        <button
+          onClick={handleSubmitPayment}
+          disabled={!stripe || isSubmitting}
+          className="w-full py-4 bg-white/10 hover:bg-white/20 rounded-xl transition-all duration-200 flex items-center justify-center font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? (
+            <Spinner className="w-5 h-5 mr-2 animate-spin" />
+          ) : (
+            <LockClosedIcon className="w-5 h-5 mr-2" />
+          )}
+          {isSubmitting ? "Processing Payment..." : "Confirm Payment"}
+        </button>
+      </div>
+
+      {/* Close Button */}
+      <button
+        onClick={() => setShowPaymentForm(false)}
+        className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full"
+      >
+        <XMarkIcon className="w-6 h-6" />
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };

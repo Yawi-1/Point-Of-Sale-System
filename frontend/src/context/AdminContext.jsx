@@ -13,7 +13,7 @@ export const AdminProvider = ({ children }) => {
   const { data:users, error, loading } = useFetch("http://localhost:5000/api/auth/allUsers", options, token);
   const {data:products} = useFetch('http://localhost:5000/api/product/all',options)
   const addProduct = (product)=>{
-    setAllProducts((prev)=>([...allProducts,product]))
+    setAllProducts((prev)=>([...prev,product]))
   }
   useEffect(() => {
     if (users) {
