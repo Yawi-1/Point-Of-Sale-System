@@ -10,6 +10,10 @@ const salesSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    customerEmail:{
+      type: String,
+      required: true,
+    },
     staff: {
       ref: "User",
       type: mongoose.Schema.Types.ObjectId,

@@ -52,7 +52,7 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['admin', 'staff']} />}>
               <Route path="/" element={user?.role === 'admin' ? <Dashboard /> : <StaffDashboard />} />
               <Route path="/sales" element={user?.role === 'admin' ? <Sales /> : <StaffSales />} />
-              <Route path="/inventory" element={user?.role === 'admin' ? <Inventory /> : <StaffInventory />} />
+              <Route path="/inventory" element={ <Inventory /> } />
               <Route path="/users" element={user?.role === 'admin' && <Users />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

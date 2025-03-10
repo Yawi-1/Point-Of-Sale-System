@@ -23,9 +23,12 @@ const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
 // Sales Controllers....
 export const getAllSales = async (req, res) => {
   try {
-    const sales = await Sale.find({});
+    const sales = await Sale.find({})
+    .select('-customerEmail,-customerPhone')
+    .populate('staff','name')
+    .exec();
     res.json({
-      sales,
+      data:sales,
       message: "All sales retrieved successfully",
       success: true,
     });
@@ -36,10 +39,10 @@ export const getAllSales = async (req, res) => {
 
 export const addSales = async (req, res) => {
   try {
-    const { customerName, customerPhone, totalAmount, products, paymentId } = req.body;
+    const { customerName, customerPhone,customerEmail, totalAmount, products, paymentId } = req.body;
     const staffId = req?.user?.id; 
 
-    if (!customerName || !customerPhone || !totalAmount || !products) {
+    if (!customerName || !customerPhone || !totalAmount || !products || !customerEmail) {
       return res
         .status(400)
         .json({ message: "Missing required fields..", success: false });
@@ -52,6 +55,7 @@ export const addSales = async (req, res) => {
     const newSale = new Sale({
       customerName,
       customerPhone,
+      customerEmail,
       totalAmount,
       products,
       staff: staffId,

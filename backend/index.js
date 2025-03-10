@@ -12,11 +12,16 @@ const PORT =  5000 ;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Update CORS configuration to:
 app.use(cors({
     origin: ['http://localhost:5173', 'http://localhost:5174'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    credentials: true
+  }));
+  
+  // Add OPTIONS handling
+  app.options('*', cors());
   
 app.use('/api/product',productRouter)
 app.use('/api/auth',userRouter)

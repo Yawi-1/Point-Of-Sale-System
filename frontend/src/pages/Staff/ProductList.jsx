@@ -20,7 +20,7 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
     
         // Update the selected products state with the new array
         setSelectedProducts(updatedProducts);
-        localStorage.setItem('cartItems',JSON.stringify(selectedProducts))
+        localStorage.setItem('cartItems',JSON.stringify(updatedProducts))
       };
   return (
     <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
