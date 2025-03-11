@@ -7,7 +7,7 @@ import {
   FaBoxes,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 const Sidebar = ({ isOpen }) => {
   const location = useLocation();
   const { logout, user } = useAuth();

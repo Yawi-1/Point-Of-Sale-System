@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { FaPlus, FaSearch, FaFilter } from 'react-icons/fa';
-import InventoryTable from '../../components/InventoryTable';
-import AddProductModal from '../../components/AddProductModal';
+import InventoryTable from '../../components/Tables/InventoryTable';
+import AddProductModal from '../../components/Modals/AddProductModal';
 import { useAdmin } from '../../context/AdminContext';
+
 const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [stockFilter, setStockFilter] = useState('all');
   const [showAddModal,setShowAddModal] = useState(false)
-  const {allProducts} = useAdmin();
+  const {allProducts,setAllProducts} = useAdmin();
 
   // Get unique categories for filter dropdown
   const categories = ['all', ...new Set(allProducts.map(product => product.productCategory))];
@@ -44,15 +45,18 @@ const Inventory = () => {
     return true;
   });
 
-  // Handler functions (these would connect to actual functionality in a real app)
-  const handleEdit = (id) => {
-    console.log(`Edit product with ID: ${id}`);
-    // In a real app, this would open a modal or navigate to an edit page
-  };
+  
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     console.log(`Delete product with ID: ${id}`);
-    // In a real app, this would show a confirmation dialog and then delete the product
+    const response = await fetch(`http://localhost:5000/api/product/delete/${id}`,{
+      method: 'DELETE'
+    })
+    const data = await response.json();
+    if(data.success){
+      alert('Product deleted successfully');
+      setAllProducts((prev)=>([...prev, data.product]))
+    }
   };
 
   return (
@@ -62,6 +66,28 @@ const Inventory = () => {
           <h1 className="text-2xl font-semibold text-gray-800">Inventory Management</h1>
           <p className="text-gray-500">Manage your products and stock levels</p>
         </div>
+        <div>
+            <h3 className="text-sm font-medium text-gray-500">Total Products</h3>
+            <p className="text-2xl font-semibold text-gray-800">{allProducts.length}</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Out of Stock</h3>
+            <p className="text-2xl font-semibold text-gray-800">
+              {allProducts.filter(product => product.productQuantity <= 0).length}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Low Stock</h3>
+            <p className="text-2xl font-semibold text-gray-800">
+              {allProducts.filter(product => product.productQuantity > 0 && product.productQuantity <= 10).length}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Categories</h3>
+            <p className="text-2xl font-semibold text-gray-800">
+              {categories.length - 1} 
+            </p>
+       </div> 
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-2">
           <button 
             onClick={() => setFilterOpen(!filterOpen)}
@@ -143,38 +169,9 @@ const Inventory = () => {
         </div>
       )}
       
-      {/* Inventory Stats */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Total Products</h3>
-            <p className="text-2xl font-semibold text-gray-800">{allProducts.length}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Out of Stock</h3>
-            <p className="text-2xl font-semibold text-gray-800">
-              {allProducts.filter(product => product.productQuantity <= 0).length}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Low Stock</h3>
-            <p className="text-2xl font-semibold text-gray-800">
-              {allProducts.filter(product => product.productQuantity > 0 && product.productQuantity <= 10).length}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Categories</h3>
-            <p className="text-2xl font-semibold text-gray-800">
-              {categories.length - 1} {/* Subtract 1 for the 'all' option */}
-            </p>
-          </div>
-        </div>
-      </div>
-      
       {/* Inventory Table */}
       <InventoryTable 
         products={filteredProducts} 
-        onEdit={handleEdit} 
         onDelete={handleDelete} 
       />
       <AddProductModal

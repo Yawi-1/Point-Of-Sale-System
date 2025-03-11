@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { FaPlus, FaSearch } from 'react-icons/fa';
-import UsersTable from '../../components/UsersTable';
-import AddUserModal from '../../components/AddUserModal';
+import UsersTable from '../../components/Tables/UsersTable';
+import AddUserModal from '../../components/Modals/AddUserModal';
 import {useAdmin} from '../../context/AdminContext'
 
 const Users = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const {allUsers,loading} = useAdmin();
+  const {allUsers,loading,setAllUsers} = useAdmin();
   const [showModal,setShowModal] = useState(false)
   
 
@@ -19,16 +19,25 @@ const Users = () => {
       user.role.toLowerCase().includes(searchLower)
     );
   });
-
-  // Handler functions (these would connect to actual functionality in a real app)
-  const handleEdit = (id) => {
-    console.log(`Edit user with ID: ${id}`);
-    // In a real app, this would open a modal or navigate to an edit page
-  };
-
-  const handleDelete = (id) => {
-    console.log(`Delete user with ID: ${id}`);
-    // In a real app, this would show a confirmation dialog and then delete the user
+ 
+  const handleDelete = async (id) => {
+     try {
+      const response = await fetch(`http://localhost:5000/api/auth/delete/${id}`, {
+        method:'DELETE',
+      });
+      const data = await response.json();
+      if(data.success){
+        setAllUsers(allUsers.filter((item)=> item._id !== id))
+        alert('Deleted successfully...')
+      }
+      console.log(data)
+     } catch (error) {
+      if(error.response && error.response.data){
+        alert(error.response.data.message)
+      } else{
+        alert('Something went wrong , try again later')
+      }
+     }
   };
 
 
@@ -89,7 +98,6 @@ const Users = () => {
       {loading && <p>Loading ....</p>}
       <UsersTable 
         users={filteredUsers} 
-        onEdit={handleEdit} 
         onDelete={handleDelete} 
       />
       <AddUserModal 

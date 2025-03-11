@@ -10,18 +10,12 @@ export const AdminProvider = ({ children }) => {
   // Memoize options to prevent infinite re-fetch
   const options = useMemo(() => ({}), []);
 
-  const { data:users, error, loading } = useFetch("http://localhost:5000/api/auth/allUsers", options, token);
+  const { data:users } = useFetch("http://localhost:5000/api/auth/allUsers", options, token);
   const {data:products} = useFetch('http://localhost:5000/api/product/all',options);
   const {data:allSales} = useFetch('http://localhost:5000/api/sale/all',options);
   const {data:staffSales} = useFetch('http://localhost:5000/api/sale/each',options,token);
 
-
-
-  const addProduct = (product)=>{
-    setAllProducts((prev)=>([...prev,product]))
-  }
-
-
+  const totalSales = allSales?.reduce((sum, sale) => sum + sale.totalAmount, 0);
 
 
   useEffect(() => {
@@ -34,7 +28,7 @@ export const AdminProvider = ({ children }) => {
   }, [users,products]); 
 
   return (
-    <AdminContext.Provider value={{ allUsers,allProducts, error,staffSales, loading,addProduct,allSales }}>
+    <AdminContext.Provider value={{ allUsers,allProducts,setAllProducts,setAllUsers,staffSales,allSales,totalSales }}>
       {children}
     </AdminContext.Provider>
   );

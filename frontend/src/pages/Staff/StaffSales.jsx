@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAdmin } from '../../context/AdminContext'
-import RecentSalesTable from '../../components/RecentSalesTable';
+
 const StaffSales = () => {
   const {staffSales} = useAdmin();
  const totalSales = staffSales.reduce((sum,item)=> sum + item.totalAmount,0)
@@ -18,7 +18,7 @@ const StaffSales = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <h3 className="text-sm font-medium text-gray-500">Total Sales</h3>
-          <p className="text-2xl font-semibold text-gray-800">${totalSales.toFixed(2)}</p>
+          <p className="text-2xl font-semibold text-gray-800">₹{totalSales.toFixed(2)}</p>
         </div>
         <div>
           <h3 className="text-sm font-medium text-gray-500">Transactions</h3>
@@ -27,7 +27,7 @@ const StaffSales = () => {
         <div>
           <h3 className="text-sm font-medium text-gray-500">Average Sale</h3>
           <p className="text-2xl font-semibold text-gray-800">
-            ${(totalSales / (staffSales.length || 1)).toFixed(2)}
+            ₹{(totalSales / (staffSales.length || 1)).toFixed(2)}
           </p>
         </div>
       </div>

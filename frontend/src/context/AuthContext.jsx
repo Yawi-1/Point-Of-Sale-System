@@ -6,14 +6,15 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isCheck,setIsCheck] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
+      setIsCheck(true);
       const token = localStorage.getItem('token');
       if (!token) {
-        setLoading(false);
+        setIsCheck(false);
         return;
       }
 
@@ -25,7 +26,7 @@ export function AuthProvider({ children }) {
       } catch (error) {
         logout();
       } finally {
-        setLoading(false);
+        setIsCheck(false);
       }
     };
 
@@ -46,7 +47,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout,isCheck }}>
       {children}
     </AuthContext.Provider>
   );

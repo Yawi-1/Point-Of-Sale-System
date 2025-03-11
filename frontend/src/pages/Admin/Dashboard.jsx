@@ -3,7 +3,7 @@ import {
   FaShoppingCart, 
   FaUsers, 
   FaBoxes, 
-  FaDollarSign 
+  FaRupeeSign 
 } from 'react-icons/fa';
 import { 
   Chart as ChartJS, 
@@ -18,8 +18,9 @@ import {
   ArcElement 
 } from 'chart.js';
 import { Line, Bar, Pie } from 'react-chartjs-2';
-import StatCard from '../../components/StatCard';
-import RecentSalesTable from '../../components/RecentSalesTable';
+import StatCard from '../../components/Elements/StatCard';
+import RecentSalesTable from '../../components/Tables/RecentSalesTable';
+import { useAdmin } from '../../context/AdminContext';
 
 // Register ChartJS components
 ChartJS.register(
@@ -35,12 +36,13 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const {allSales,totalSales,allProducts} = useAdmin();
   // Sample data for stats
   const stats = [
-    { title: 'Total Sales', value: '$12,345', icon: <FaDollarSign size={24} />, color: 'bg-primary' },
-    { title: 'Total Orders', value: '156', icon: <FaShoppingCart size={24} />, color: 'bg-secondary' },
+    { title: 'Total Sales', value:`${totalSales ? `₹${totalSales}` : 'Wait a sec..'}`, icon: <FaRupeeSign size={24} />, color: 'bg-primary' },
+    { title: 'Total Orders', value:  `${allSales ? allSales.length : 'Wait a sec...'}`, icon: <FaShoppingCart size={24} />, color: 'bg-secondary' },
     { title: 'Total Customers', value: '86', icon: <FaUsers size={24} />, color: 'bg-accent' },
-    { title: 'Products', value: '120', icon: <FaBoxes size={24} />, color: 'bg-danger' },
+    { title: 'Products', value:`${allProducts ? allProducts.length : 'Wait a sec...'}` , icon: <FaBoxes size={24} />, color: 'bg-danger' },
   ];
 
   // Sample data for recent sales
@@ -152,9 +154,9 @@ const Dashboard = () => {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+        {/* <div className="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
           <RecentSalesTable sales={recentSales} />
-        </div>
+        </div> */}
         
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Sales by Category</h2>

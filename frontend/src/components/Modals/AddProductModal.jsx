@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useAdmin } from "../context/AdminContext";
+import { useAdmin } from "../../context/AdminContext";
 const AddProductModal = ({ isOpen, onClose }) => {
-  const { addProduct } = useAdmin();
+  const { setAllProducts } = useAdmin();
   const [productData, setProductData] = useState({
     productName: "",
     productPrice: "",
@@ -103,7 +103,8 @@ const AddProductModal = ({ isOpen, onClose }) => {
       );
       if (response.data.success) {
         setSuccessMessage("Product added successfully!");
-        addProduct(response.data.data);
+        const {data} = response.data;
+        setAllProducts((prev)=>([...prev,data]))
         setTimeout(() => {
           setSuccessMessage(null);
           resetForm();

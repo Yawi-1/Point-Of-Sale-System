@@ -1,10 +1,10 @@
 import React from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import {FaTrash } from 'react-icons/fa';
 
-const InventoryTable = ({ products, onEdit, onDelete }) => {
+const InventoryTable = ({ products, onDelete }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-auto h-72">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden mb-10">
+      <div className="overflow-auto h-96">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -63,12 +63,6 @@ const InventoryTable = ({ products, onEdit, onDelete }) => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button 
-                    onClick={() => onEdit(product._id)} 
-                    className="text-indigo-600 hover:text-indigo-900 mr-3"
-                  >
-                    <FaEdit />
-                  </button>
                   <button 
                     onClick={() => onDelete(product._id)} 
                     className="text-red-600 hover:text-red-900"

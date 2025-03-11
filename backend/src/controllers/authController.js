@@ -1,7 +1,6 @@
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { Query } from "mongoose";
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "24h" });
@@ -45,19 +44,11 @@ export const register = async (req, res) => {
     // Generate JWT token
     const token = generateToken(savedUser._id, savedUser.role);
 
-    // Store token in HTTP-only cookie (for security)
-    // res.cookie("token", token, {
-    //   httpOnly: true, // Prevents client-side access to the cookie
-    //   secure: process.env.NODE_ENV === "production", // Secure flag for production
-    //   sameSite: "strict", // Prevent CSRF attacks
-    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    // });
-
     res.status(201).json({
       message: "User registered successfully.",
       success: true,
       user: {
-        id: savedUser._id,
+        _id: savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
         role: savedUser.role,
@@ -89,12 +80,7 @@ export const login = async (req, res) => {
         .json({ message: "Invalid email or password.", success: false });
     }
     const token = generateToken(user._id, user.role);
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   maxAge: 7 * 24 * 60 * 60 * 1000,
-    // });
+   
 
     res.status(201).json({
       message: "User Loggeed In successfully.",
@@ -158,6 +144,18 @@ export const getAllUsers = async(req,res)=>{
   } catch (error) {
     console.error("Get all users error:", error);
     res.status(400).json({message:error.message,success:false})
-    
+  }
+}
+
+export const deleteUser = async(req,res)=>{
+  try {
+     const {id} = req.params;
+     const user = await User.findByIdAndDelete(id);
+     if(!user){
+      return res.status(404).json({message:"User not found.",success:false});
+     }
+     res.status(200).json({message:"User deleted.",success:true})
+  } catch (error) {
+    res.status(400).json({message:error.message,success:false}) 
   }
 }

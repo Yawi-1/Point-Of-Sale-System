@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useAdmin } from "../../context/AdminContext";
 const AddUserModal = ({ isOpen, onClose }) => {
-  const [isAdding,setIsAdding] = useState(false)
+  const [isAdding,setIsAdding] = useState(false);
+  const {setAllUsers} = useAdmin();
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -25,7 +26,9 @@ const AddUserModal = ({ isOpen, onClose }) => {
       setIsAdding(true)
       const response = await axios.post('http://localhost:5000/api/auth/register', userData);
       if(response.data.success){
-        alert(response?.data?.message)
+        const {user} = response.data;
+        setAllUsers((prev) => [...prev, user]);
+        alert(response?.data?.message);
         setUserData({
           name: "",
           email: "",

@@ -1,7 +1,7 @@
 import React from 'react';
-import { FaEdit, FaTrash, FaLock,  } from 'react-icons/fa';
+import {  FaTrash,  } from 'react-icons/fa';
 
-const UsersTable = ({ users, onEdit, onDelete }) => {
+const UsersTable = ({ users, onDelete }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-auto h-64">
@@ -38,20 +38,14 @@ const UsersTable = ({ users, onEdit, onDelete }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                   <button 
-                    onClick={() => onEdit(user.id)} 
-                    className="text-indigo-600 hover:text-indigo-900 mr-3"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button 
-                    onClick={() => onDelete(user.id)} 
+                    onClick={() => onDelete(user._id)} 
                     className="text-red-600 hover:text-red-900"
                   >
                     <FaTrash />
                   </button>
                 </td>
               </tr>
-            ))}
+            ))} 
           </tbody>
         </table>
       </div>

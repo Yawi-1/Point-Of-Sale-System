@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useStaff } from "../../context/StaffContext";
-import PaymentModal from "../../components/PaymentModal";
-import PaymentSuccess from "../../components/PaymentSuccess";
-import CustomerForm from "../../components/CustomerForm";
-import OrderTable from "../../components/OrderTable";
+import PaymentModal from "../../components/Payment/PaymentModal";
+import PaymentSuccess from "../../components/Payment/PaymentSuccess";
+import CustomerForm from "../../components/Order/CustomerForm";
+import OrderTable from "../../components/Order/OrderTable";
 
 const Order = () => {
   const [customer, setCustomer] = useState({
@@ -16,7 +16,7 @@ const Order = () => {
   const [paymentStatus, setPaymentStatus] = useState({
     showForm: false,
     error: "",
-    isSubmitting: false,
+    isSubmitting: false, 
     isSuccess: false,
   });
 
@@ -119,12 +119,8 @@ const Order = () => {
             showForm: false,
             isSuccess: true,
           }));
+          alert('Payment successful');
           localStorage.removeItem("cartItems");
-          setCustomer({
-            name: "",
-            phone: "",
-            email: "",
-          });
         } else {
           setPaymentStatus((prev) => ({
             ...prev,
@@ -146,6 +142,11 @@ const Order = () => {
     if (window.confirm("Are you sure you want to cancel the order?")) {
       localStorage.removeItem("cartItems");
       setSelectedProducts([]);
+      setCustomer({
+        name: "",
+        phone: "",
+        email: "",
+      })
     }
   };
 
@@ -202,6 +203,11 @@ const Order = () => {
             }));
             localStorage.removeItem("cartItems");
             setSelectedProducts([]);
+            setCustomer({
+              name: "",
+              email: "",
+              phone: "",
+            })
           }}
         />
       )}

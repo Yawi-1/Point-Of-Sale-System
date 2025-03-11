@@ -36,11 +36,10 @@ const StaffTopbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden absolute top-16 left-0 w-full bg-gray-800 p-4 flex flex-col space-y-4">
-          <Link to="/" className="text-white hover:text-gray-400">Dashboard</Link>
-          <Link to="/sales" className="text-white hover:text-gray-400">Sales</Link>
-          <Link to="/inventory" className="text-white hover:text-gray-400">Inventory</Link>
-          <Link to="/history" className="text-white hover:text-gray-400">History</Link>
+        <div className="z-20 lg:hidden absolute top-16 left-0 w-full bg-gray-800 p-4 flex flex-col space-y-4">
+          <Link to="/" onClick={()=>setIsMenuOpen(false)} className="text-white hover:text-gray-400">Dashboard</Link>
+          <Link to="/sales" onClick={()=>setIsMenuOpen(false)} className="text-white hover:text-gray-400">Sales</Link>
+          <Link to="/inventory" onClick={()=>setIsMenuOpen(false)} className="text-white hover:text-gray-400">Inventory</Link>
           <button className="text-white hover:text-gray-400">Log out</button>
         </div>
       )}
