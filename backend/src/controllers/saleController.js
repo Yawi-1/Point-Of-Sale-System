@@ -1,6 +1,8 @@
 import Sale from "../models/salesModel.js";
+import Product from '../models/productModel.js'
 import dotenv from 'dotenv';
 import stripe from 'stripe'
+import mongoose from "mongoose";
 dotenv.config()
 
 const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
@@ -37,21 +39,24 @@ export const getAllSales = async (req, res) => {
   }
 };
 
+
 export const addSales = async (req, res) => {
+  const session = await mongoose.startSession(); // Start a session
+  session.startTransaction(); // Begin a transaction
+
   try {
-    const { customerName, customerPhone,customerEmail, totalAmount, products, paymentId } = req.body;
-    const staffId = req?.user?.id; 
+    const { customerName, customerPhone, customerEmail, totalAmount, products, paymentId } = req.body;
+    const staffId = req?.user?.id; // Get staff ID
 
+    // Validate required fields
     if (!customerName || !customerPhone || !totalAmount || !products || !customerEmail) {
-      return res
-        .status(400)
-        .json({ message: "Missing required fields..", success: false });
+      throw new Error("Missing required fields.");
     }
-    if(!paymentId){
-      return res.status(400).json({ message: "Payment ID is required", success: false});
+    if (!paymentId) {
+      throw new Error("Payment ID is required.");
     }
 
-    // Create a new sale document
+    // Create a new sale record inside the transaction
     const newSale = new Sale({
       customerName,
       customerPhone,
@@ -59,20 +64,45 @@ export const addSales = async (req, res) => {
       totalAmount,
       products,
       staff: staffId,
-      paymentId
+      paymentId,
     });
 
-    // Save the sale to the database
-    const savedSale = await newSale.save();
+    const savedSale = await newSale.save({ session });
 
-    // Respond with success message
-    res.status(200).json({ message: "New Sale Added..", success: true, data: savedSale });
+    // Reduce stock for each product
+    await Promise.all(
+      products.map(async (product) => {
+        const existingProduct = await Product.findById(product._id).session(session);
+        if (!existingProduct) {
+          throw new Error(`Product with ID ${product._id} not found.`);
+        }
+
+        // Convert productQuantity from string to number
+        const currentQuantity = Number(existingProduct.productQuantity);
+        const requestedQuantity = Number(product.quantity);
+
+        if (currentQuantity < requestedQuantity) {
+          throw new Error(`Not enough stock for product ${existingProduct.name}.`);
+        }
+
+        // Update stock and convert it back to string for DB
+        existingProduct.productQuantity = (currentQuantity - requestedQuantity).toString();
+        await existingProduct.save({ session });
+      })
+    );
+
+    // Commit the transaction (finalize changes)
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({ message: "New Sale Added & Stock Updated", success: true, data: savedSale });
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({ message: error.message, success: false });
+    await session.abortTransaction(); // Rollback changes if any error occurs
+    session.endSession();
+    console.error("Transaction failed:", error);
+    res.status(400).json({ message: error.message, success: false });
   }
 };
-
 
 
 export const getSalesByStaff = async(req,res)=>{

@@ -20,25 +20,6 @@ const Users = () => {
     );
   });
  
-  const handleDelete = async (id) => {
-     try {
-      const response = await fetch(`http://localhost:5000/api/auth/delete/${id}`, {
-        method:'DELETE',
-      });
-      const data = await response.json();
-      if(data.success){
-        setAllUsers(allUsers.filter((item)=> item._id !== id))
-        alert('Deleted successfully...')
-      }
-      console.log(data)
-     } catch (error) {
-      if(error.response && error.response.data){
-        alert(error.response.data.message)
-      } else{
-        alert('Something went wrong , try again later')
-      }
-     }
-  };
 
 
   return (
@@ -97,8 +78,8 @@ const Users = () => {
       {/* Users Table */}
       {loading && <p>Loading ....</p>}
       <UsersTable 
-        users={filteredUsers} 
-        onDelete={handleDelete} 
+        users={filteredUsers}  
+        setAllUsers={setAllUsers}
       />
       <AddUserModal 
       isOpen={showModal}

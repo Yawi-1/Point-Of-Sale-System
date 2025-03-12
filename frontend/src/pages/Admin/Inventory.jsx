@@ -47,17 +47,7 @@ const Inventory = () => {
 
   
 
-  const handleDelete = async (id) => {
-    console.log(`Delete product with ID: ${id}`);
-    const response = await fetch(`http://localhost:5000/api/product/delete/${id}`,{
-      method: 'DELETE'
-    })
-    const data = await response.json();
-    if(data.success){
-      alert('Product deleted successfully');
-      setAllProducts((prev)=>([...prev, data.product]))
-    }
-  };
+  
 
   return (
     <div className="space-y-6">
@@ -172,7 +162,7 @@ const Inventory = () => {
       {/* Inventory Table */}
       <InventoryTable 
         products={filteredProducts} 
-        onDelete={handleDelete} 
+        setAllProducts={setAllProducts}
       />
       <AddProductModal
       isOpen={showAddModal}

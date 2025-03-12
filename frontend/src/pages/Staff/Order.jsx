@@ -5,6 +5,7 @@ import PaymentModal from "../../components/Payment/PaymentModal";
 import PaymentSuccess from "../../components/Payment/PaymentSuccess";
 import CustomerForm from "../../components/Order/CustomerForm";
 import OrderTable from "../../components/Order/OrderTable";
+import { useAdmin } from "../../context/AdminContext";
 
 const Order = () => {
   const [customer, setCustomer] = useState({
@@ -105,7 +106,7 @@ const Order = () => {
             products: selectedProducts,
           };
 
-          await fetch("http://localhost:5000/api/sale/add", {
+         await fetch("http://localhost:5000/api/sale/add", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -113,7 +114,7 @@ const Order = () => {
             },
             body: JSON.stringify(saleData),
           });
-
+         
           setPaymentStatus((prev) => ({
             ...prev,
             showForm: false,
@@ -155,13 +156,13 @@ const Order = () => {
       <h2 className="text-xl font-semibold mb-4">Current Order</h2>
 
       {/* Render the order table */}
-      <OrderTable selectedProducts={selectedProducts} />
+      <OrderTable setSelectedProducts={setSelectedProducts} selectedProducts={selectedProducts} />
 
       {/* Render the customer form */}
       <CustomerForm customer={customer} handleChange={handleChange} />
 
       <div className="mt-4 flex justify-end gap-4 flex-wrap">
-        {selectedProducts.length > 0 && (
+        {selectedProducts?.length > 0 && (
           <button onClick={handleCancel} className="btn-danger">
             Cancel Order
           </button>
@@ -196,18 +197,14 @@ const Order = () => {
           products={selectedProducts}
           totalAmount={totalAmount}
           onClose={() => {
-            setPaymentStatus((prev) => ({
-              ...prev,
-              isSuccess: false,
-              isSubmitting: false,
-            }));
             localStorage.removeItem("cartItems");
             setSelectedProducts([]);
             setCustomer({
               name: "",
               email: "",
               phone: "",
-            })
+            });
+            window.location.href='/';
           }}
         />
       )}

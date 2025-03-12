@@ -1,7 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {  FaTrash,  } from 'react-icons/fa';
+import DeleteModal from '../Modals/DeleteModal';
 
-const UsersTable = ({ users, onDelete }) => {
+const UsersTable = ({ users,setAllUsers }) => {
+
+   const [isDelete,setIsDelete] = useState(false);
+   const [id,setId] = useState('')
+   const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/delete/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+  
+      const data = await response.json();
+      if (data.success) {
+        setAllUsers(users.filter((item) => item._id !== id));
+        alert('Deleted successfully...');
+      }
+      setIsDelete(false);
+      setId('');
+    } catch (error) {
+      alert(error.message || 'Something went wrong, try again later');
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-auto h-64">
@@ -38,7 +65,7 @@ const UsersTable = ({ users, onDelete }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                   <button 
-                    onClick={() => onDelete(user._id)} 
+                    onClick={() => {setId(user._id),setIsDelete(true)}} 
                     className="text-red-600 hover:text-red-900"
                   >
                     <FaTrash />
@@ -49,6 +76,14 @@ const UsersTable = ({ users, onDelete }) => {
           </tbody>
         </table>
       </div>
+      <DeleteModal
+        isOpen={isDelete}
+        onClose={() => setIsDelete(false)}
+        onDelete={handleDelete}
+        title="Delete Item"
+        description="Are you sure you want to delete this item? This action cannot be undone."
+        deleteButtonLabel="Confirm Delete"
+      />
     </div>
   );
 };

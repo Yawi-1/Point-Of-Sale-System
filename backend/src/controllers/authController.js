@@ -147,15 +147,23 @@ export const getAllUsers = async(req,res)=>{
   }
 }
 
-export const deleteUser = async(req,res)=>{
+export const deleteUser = async (req, res) => {
   try {
-     const {id} = req.params;
-     const user = await User.findByIdAndDelete(id);
-     if(!user){
-      return res.status(404).json({message:"User not found.",success:false});
-     }
-     res.status(200).json({message:"User deleted.",success:true})
+    const { id } = req.params;
+    const user = await User.findById(id);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found.", success: false });
+    }
+ 
+    const protectedUsers = ['67c7e6392b66ba2318a10a3b','67c6b4bb074e268a7335b278']
+    if (protectedUsers.includes(id)) {
+      return res.status(400).json({ message: "This user can't be deleted ....", success: false });
+    }
+
+    await User.findByIdAndDelete(id);       
+    res.status(200).json({ message: "User deleted.", success: true });
   } catch (error) {
-    res.status(400).json({message:error.message,success:false}) 
+    res.status(400).json({ message: error.message, success: false });
   }
-}
+};

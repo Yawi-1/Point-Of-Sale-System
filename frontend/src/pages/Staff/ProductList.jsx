@@ -3,6 +3,10 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
   const [searchQuery, setSearchQuery] = useState('');
   // Handle Add to Cart button click
     const handleAddToCart = (product) => {
+      if(product.productQuantity == 0){
+        alert("Product is out of stock");
+        return;
+      }
         // Create a copy of the selectedProducts array
         const updatedProducts = [...selectedProducts];
         
@@ -100,7 +104,17 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
                 <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full capitalize">
                   {item.productCategory}
                 </span>
+              
               </div>
+              <p className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    item.productQuantity > 10 
+                      ? 'bg-green-100 text-green-800' 
+                      : item.productQuantity > 0 
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {item.productQuantity} {item.productQuantity > 10 ?  ' In Stock' : item.productQuantity > 0 ? 'Low Stock' : 'Out of Stock'}
+                  </p>
             </div>
           </div>
         ))}

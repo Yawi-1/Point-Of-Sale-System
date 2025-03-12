@@ -1,7 +1,23 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {FaTrash } from 'react-icons/fa';
+import DeleteModal from '../Modals/DeleteModal'
+const InventoryTable = ({ products,setAllProducts }) => {
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [id,setId] = useState('');
 
-const InventoryTable = ({ products, onDelete }) => {
+
+  const handleDelete = async () => {
+    const response = await fetch(`http://localhost:5000/api/product/delete/${id}`,{
+      method: 'DELETE'
+    })
+    const data = await response.json();
+    if(data.success){
+      alert('Product deleted successfully');
+      setAllProducts((prev)=> prev.filter((item)=> item._id !== id))
+    }
+    setDeleteModalOpen(false);
+    setId('')
+  };
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden mb-10">
       <div className="overflow-auto h-96">
@@ -46,7 +62,7 @@ const InventoryTable = ({ products, onDelete }) => {
                   {product.productCategory}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  ${product.productPrice.toFixed(2)}
+                  ₹{product.productPrice.toFixed(2)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {product.productQuantity}
@@ -64,7 +80,7 @@ const InventoryTable = ({ products, onDelete }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button 
-                    onClick={() => onDelete(product._id)} 
+                    onClick={() => {setId(product._id),setDeleteModalOpen(true)}} 
                     className="text-red-600 hover:text-red-900"
                   >
                     <FaTrash />
@@ -75,6 +91,15 @@ const InventoryTable = ({ products, onDelete }) => {
           </tbody>
         </table>
       </div>
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onDelete={handleDelete}
+        id={id}
+        title="Delete Item"
+        description="Are you sure you want to delete this item? This action cannot be undone."
+        deleteButtonLabel="Confirm Delete"
+      />
     </div>
   );
 };

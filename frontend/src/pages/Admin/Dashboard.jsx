@@ -39,20 +39,11 @@ const Dashboard = () => {
   const {allSales,totalSales,allProducts} = useAdmin();
   // Sample data for stats
   const stats = [
-    { title: 'Total Sales', value:`${totalSales ? `₹${totalSales}` : 'Wait a sec..'}`, icon: <FaRupeeSign size={24} />, color: 'bg-primary' },
-    { title: 'Total Orders', value:  `${allSales ? allSales.length : 'Wait a sec...'}`, icon: <FaShoppingCart size={24} />, color: 'bg-secondary' },
-    { title: 'Total Customers', value: '86', icon: <FaUsers size={24} />, color: 'bg-accent' },
-    { title: 'Products', value:`${allProducts ? allProducts.length : 'Wait a sec...'}` , icon: <FaBoxes size={24} />, color: 'bg-danger' },
+    { title: 'Total Sales', value:`${totalSales ? `₹${totalSales.toFixed(2)}` : 'Loading...'}`, icon: <FaRupeeSign size={24} />, color: 'bg-primary' },
+    { title: 'Total Orders', value:  `${allSales ? allSales.length : 'Loading...'}`, icon: <FaShoppingCart size={24} />, color: 'bg-secondary' },
+    { title: 'Products', value:`${allProducts ? allProducts.length : 'Loading...'}` , icon: <FaBoxes size={24} />, color: 'bg-danger' },
   ];
 
-  // Sample data for recent sales
-  const recentSales = [
-    { id: '1001', customer: 'John Doe', date: '2025-01-15', amount: 125.99, status: 'Completed' },
-    { id: '1002', customer: 'Jane Smith', date: '2025-01-14', amount: 89.50, status: 'Completed' },
-    { id: '1003', customer: 'Bob Johnson', date: '2025-01-14', amount: 45.25, status: 'Pending' },
-    { id: '1004', customer: 'Alice Brown', date: '2025-01-13', amount: 210.75, status: 'Completed' },
-    { id: '1005', customer: 'Charlie Wilson', date: '2025-01-12', amount: 65.00, status: 'Cancelled' },
-  ];
 
   // Sample data for sales chart
   const salesChartData = {
@@ -108,7 +99,7 @@ const Dashboard = () => {
       </div>
       
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats.map((stat, index) => (
           <StatCard
             key={index}

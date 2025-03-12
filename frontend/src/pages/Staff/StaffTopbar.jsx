@@ -40,7 +40,7 @@ const StaffTopbar = () => {
           <Link to="/" onClick={()=>setIsMenuOpen(false)} className="text-white hover:text-gray-400">Dashboard</Link>
           <Link to="/sales" onClick={()=>setIsMenuOpen(false)} className="text-white hover:text-gray-400">Sales</Link>
           <Link to="/inventory" onClick={()=>setIsMenuOpen(false)} className="text-white hover:text-gray-400">Inventory</Link>
-          <button className="text-white hover:text-gray-400">Log out</button>
+          <button className="text-white hover:text-gray-400" onClick={logout}>Log out</button>
         </div>
       )}
     </div>

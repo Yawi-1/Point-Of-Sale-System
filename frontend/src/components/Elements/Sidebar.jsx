@@ -58,10 +58,10 @@ const Sidebar = ({ isOpen }) => {
         </ul>
       </div>
 
-      <div className="absolute bottom-0 w-full border-t border-gray-700">
+      <div className="absolute bottom-0  border-gray-700">
         <button
           onClick={logout}
-          className="flex items-center w-full px-4 py-3 text-gray-300 hover:bg-gray-700 transition-colors duration-200"
+          className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 transition-colors duration-200"
         >
           <span className="mr-3">
             <FaSignOutAlt size={20} />

@@ -6,13 +6,16 @@ const AdminContext = createContext(null);
 export const AdminProvider = ({ children }) => {
   const token = localStorage.getItem('token');
   const [allUsers, setAllUsers] = useState([]);
-  const [allProducts,setAllProducts] = useState([])
+  const [allProducts,setAllProducts] = useState([]);
+  const [allSales,setAllSales] = useState([])
+
+  
   // Memoize options to prevent infinite re-fetch
   const options = useMemo(() => ({}), []);
 
   const { data:users } = useFetch("http://localhost:5000/api/auth/allUsers", options, token);
   const {data:products} = useFetch('http://localhost:5000/api/product/all',options);
-  const {data:allSales} = useFetch('http://localhost:5000/api/sale/all',options);
+  const {data:Sales} = useFetch('http://localhost:5000/api/sale/all',options);
   const {data:staffSales} = useFetch('http://localhost:5000/api/sale/each',options,token);
 
   const totalSales = allSales?.reduce((sum, sale) => sum + sale.totalAmount, 0);
@@ -25,10 +28,13 @@ export const AdminProvider = ({ children }) => {
     if(products){
       setAllProducts(products)
     }
-  }, [users,products]); 
+    if(Sales){
+      setAllSales(Sales)
+    }
+  }, [users,products,Sales]); 
 
   return (
-    <AdminContext.Provider value={{ allUsers,allProducts,setAllProducts,setAllUsers,staffSales,allSales,totalSales }}>
+    <AdminContext.Provider value={{ allUsers,allProducts,setAllProducts,setAllUsers,staffSales,allSales,totalSales,setAllSales }}>
       {children}
     </AdminContext.Provider>
   );
