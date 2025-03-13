@@ -37,7 +37,6 @@ function App() {
     }
   }, [user?.role]);
 
-  console.log(import.meta.env)
   return (
     <>
     {isCheck && <div className="w-full flex items-center justify-center h-screen bg-blue-400">

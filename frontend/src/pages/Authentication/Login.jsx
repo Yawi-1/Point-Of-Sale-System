@@ -11,7 +11,6 @@ const Login = () => {
   const [isLogin,setLogin] = useState(false)
   const { login } = useAuth();
   const navigate = useNavigate();
-  console.log(email,password)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!email.trim()){
@@ -23,7 +22,7 @@ const Login = () => {
     setLogin(true);
     try {
       const response = await axios.post(
-        "https://point-of-sale-srz7.onrender.com/api/auth/login",
+        "https://pos11.netlify.app/api/auth/login",
         {
           email,
           password,

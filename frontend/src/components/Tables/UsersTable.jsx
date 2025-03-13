@@ -8,7 +8,7 @@ const UsersTable = ({ users,setAllUsers }) => {
    const [id,setId] = useState('')
    const handleDelete = async () => {
     try {
-      const response = await fetch(`https://point-of-sale-srz7.onrender.com/api/auth/delete/${id}`, {
+      const response = await fetch(`https://pos11.netlify.app/api/auth/delete/${id}`, {
         method: 'DELETE',
       });
       
