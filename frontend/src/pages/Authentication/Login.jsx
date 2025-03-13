@@ -22,7 +22,7 @@ const Login = () => {
     setLogin(true);
     try {
       const response = await axios.post(
-        "https://pos11.netlify.app/api/auth/login",
+        "https://point-of-sale-srz7.onrender.com/api/auth/login",
         {
           email,
           password,

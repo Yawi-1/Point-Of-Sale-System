@@ -80,7 +80,7 @@ const AddProductModal = ({ isOpen, onClose }) => {
     formData.append("productImage", productData.productImage);
 
     try {
-      const response = await axios.post("https://pos11.netlify.app/api/product/add", formData, {
+      const response = await axios.post("https://point-of-sale-srz7.onrender.com/api/product/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
