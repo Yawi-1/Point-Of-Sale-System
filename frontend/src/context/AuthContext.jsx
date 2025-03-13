@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
@@ -43,7 +44,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('role');
     setUser(null);
     navigate('/login');
-    alert('Logged Out Successfully....')
+    toast('Logged Out Successfully....')
   };
 
   return (

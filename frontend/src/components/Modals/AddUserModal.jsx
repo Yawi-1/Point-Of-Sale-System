@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAdmin } from "../../context/AdminContext";
+import toast from "react-hot-toast";
 const AddUserModal = ({ isOpen, onClose }) => {
   const [isAdding,setIsAdding] = useState(false);
   const {setAllUsers} = useAdmin();
@@ -19,7 +20,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!userData.name || !userData.email || !userData.password || !userData.role){
-      alert("Please fill all fields");
+      toast.info("Please fill all fields");
       return;
     }
     try {
@@ -28,7 +29,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
       if(response.data.success){
         const {user} = response.data;
         setAllUsers((prev) => [...prev, user]);
-        alert(response?.data?.message);
+        toast.success(response?.data?.message);
         setUserData({
           name: "",
           email: "",
@@ -38,7 +39,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
         setTimeout(()=>{onClose()},2000)
       }
     } catch (error) {
-      alert(error.response.data.message);
+      toast.error(error.response.data.message);
     } finally{
       setIsAdding(false)
     }
@@ -63,6 +64,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
               type="text"
               name="name"
               id="name"
+              disabled={isAdding}
               value={userData.name}
               onChange={handleChange}
               className="mt-2 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -81,6 +83,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
             <select
               value={userData.role}
               onChange={handleChange}
+              disabled={isAdding}
               name="role"
               id="role"
               className="mt-2 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -103,6 +106,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
             </label>
             <input
               value={userData.email}
+              disabled={isAdding}
               onChange={handleChange}
               type="email"
               name="email"
@@ -121,6 +125,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
               Password
             </label>
             <input
+             disabled={isAdding}
               value={userData.password}
               onChange={handleChange}
               type="password"
@@ -135,6 +140,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
           <div className="flex justify-between">
             <button
               type="button"
+              disabled={isAdding}
               onClick={onClose}
               className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none"
             >

@@ -22,6 +22,9 @@ const RecentSalesTable = ({ allSales }) => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Amount
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              By
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -38,6 +41,9 @@ const RecentSalesTable = ({ allSales }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   ₹{sale.totalAmount.toFixed(2)}
+                </td>
+                <td className="px-6 capitalize py-4 whitespace-nowrap text-sm text-gray-500">
+                  {sale.staff.name}
                 </td>
               </tr>
             ))}

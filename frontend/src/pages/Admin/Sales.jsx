@@ -5,6 +5,7 @@ import {useAdmin} from '../../context/AdminContext'
 const Sales = () => {
   const {allSales,totalSales} = useAdmin();
 
+  console.log(allSales)
   // Calculate total sales
  
 

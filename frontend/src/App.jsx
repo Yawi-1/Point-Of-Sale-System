@@ -14,6 +14,8 @@ import StaffSales from "./pages/Staff/StaffSales";
 import StaffTopbar from "./pages/Staff/StaffTopbar";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import  { Toaster } from 'react-hot-toast';
+
 
 function App() {
   const stripePromise = loadStripe(
@@ -86,6 +88,7 @@ function App() {
           </div>
         </div>
       </Elements>
+      <Toaster/>
     </>
   );
 }

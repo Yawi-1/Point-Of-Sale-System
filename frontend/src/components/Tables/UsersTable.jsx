@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {  FaTrash,  } from 'react-icons/fa';
 import DeleteModal from '../Modals/DeleteModal';
-
+import toast from 'react-hot-toast';
 const UsersTable = ({ users,setAllUsers }) => {
 
    const [isDelete,setIsDelete] = useState(false);
@@ -20,12 +20,12 @@ const UsersTable = ({ users,setAllUsers }) => {
       const data = await response.json();
       if (data.success) {
         setAllUsers(users.filter((item) => item._id !== id));
-        alert('Deleted successfully...');
+        toast('Deleted successfully...');
       }
       setIsDelete(false);
       setId('');
     } catch (error) {
-      alert(error.message || 'Something went wrong, try again later');
+      toast(error.message || 'Something went wrong, try again later');
     }
   };
 

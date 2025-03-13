@@ -5,7 +5,7 @@ import PaymentModal from "../../components/Payment/PaymentModal";
 import PaymentSuccess from "../../components/Payment/PaymentSuccess";
 import CustomerForm from "../../components/Order/CustomerForm";
 import OrderTable from "../../components/Order/OrderTable";
-import { useAdmin } from "../../context/AdminContext";
+import toast from "react-hot-toast";
 
 const Order = () => {
   const [customer, setCustomer] = useState({
@@ -41,7 +41,7 @@ const Order = () => {
   const handleCheckOut = () => {
     const error = validateForm();
     if (error) {
-      alert(error);
+      toast(error);
       return;
     }
     setPaymentStatus((prev) => ({ ...prev, showForm: true }));
@@ -120,7 +120,7 @@ const Order = () => {
             showForm: false,
             isSuccess: true,
           }));
-          alert('Payment successful');
+          toast('Payment successful');
           localStorage.removeItem("cartItems");
         } else {
           setPaymentStatus((prev) => ({

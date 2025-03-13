@@ -86,8 +86,8 @@ const AddProductModal = ({ isOpen, onClose }) => {
 
       if (response.data.success) {
         setSuccessMessage("Product added successfully!");
-        const { data } = response.data;
-        setAllProducts((prev) => [...prev, data]);
+        const newProduct = response.data.data;
+        setAllProducts((prev) => [...prev, newProduct]);
 
         setTimeout(() => {
           setSuccessMessage(null);

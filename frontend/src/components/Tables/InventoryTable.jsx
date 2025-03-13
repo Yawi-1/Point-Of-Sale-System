@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import {FaTrash } from 'react-icons/fa';
 import DeleteModal from '../Modals/DeleteModal'
+import toast from 'react-hot-toast';
 const InventoryTable = ({ products,setAllProducts }) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [id,setId] = useState('');
@@ -12,7 +13,7 @@ const InventoryTable = ({ products,setAllProducts }) => {
     })
     const data = await response.json();
     if(data.success){
-      alert('Product deleted successfully');
+      toast('Product deleted successfully');
       setAllProducts((prev)=> prev.filter((item)=> item._id !== id))
     }
     setDeleteModalOpen(false);
