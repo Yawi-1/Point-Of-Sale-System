@@ -25,7 +25,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
     }
     try {
       setIsAdding(true)
-      const response = await axios.post('http://localhost:5000/api/auth/register', userData);
+      const response = await axios.post('https://point-of-sale-srz7.onrender.com/api/auth/register', userData);
       if(response.data.success){
         const {user} = response.data;
         setAllUsers((prev) => [...prev, user]);

@@ -55,7 +55,7 @@ const Order = () => {
     const { name, phone, email } = customer;
 
     try {
-      const response = await fetch("http://localhost:5000/api/sale/pay", {
+      const response = await fetch("https://point-of-sale-srz7.onrender.com/api/sale/pay", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +106,7 @@ const Order = () => {
             products: selectedProducts,
           };
 
-         await fetch("http://localhost:5000/api/sale/add", {
+         await fetch("https://point-of-sale-srz7.onrender.com/api/sale/add", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
