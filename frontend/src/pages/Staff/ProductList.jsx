@@ -87,6 +87,7 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-gray-800 truncate">{item.productName}</h3>
                 <button
+                title={`Add ${item.productName} to cart..`}
                   onClick={() => handleAddToCart(item)}
                   className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 z-20"
                 >

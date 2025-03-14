@@ -54,76 +54,86 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-6">
-      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
-          Point of Sale System
-        </h2>
-        <p className="text-center text-gray-600 mb-6">
-          Welcome back! Please log in to manage sales and inventory.
-        </p>
-        {error && (
-          <div className="mb-4 text-red-500 text-center font-medium">
-            {error}
-          </div>
-        )}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-medium mb-2"
-              htmlFor="email"
-            >
-              Email Address
-            </label>
-            <input
-             disabled={isLogin}
-              type="email"
-              id="email"
-              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-medium mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-            disabled={isLogin}
-              type="password"
-              id="password"
-              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button
-          disabled={isLogin}
-            type="submit"
-            className="w-full bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 transition duration-200 shadow-lg"
-          >
-           {isLogin ? <div className="flex items-center justify-center gap-x-4"><div className="border-2 border-dashed animate-spin h-6 w-6 rounded-full"></div>Logging In </div> : 'Login'}
-          </button>
-        </form>
-        <p
-          onClick={handleAdminLogin}
-          className="text-blue-600 cursor-pointer underline"
-        >
-          Demo Login as Admin
-        </p>
-        <p
-          onClick={handleStaffLogin}
-          className="text-blue-600 cursor-pointer underline"
-        >
-          Demo Login as Staff
-        </p>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
+  <div className="w-full max-w-xs sm:max-w-md p-6 sm:p-8 bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-2xl">
+    <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-3 sm:mb-4">
+      Point of Sale System
+    </h2>
+    <p className="text-center text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+      Welcome back! Please log in to manage sales and inventory.
+    </p>
+    {error && (
+      <div className="mb-3 sm:mb-4 text-red-500 text-sm sm:text-base text-center font-medium">
+        {error}
       </div>
+    )}
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3 sm:mb-4">
+        <label
+          className="block text-gray-700 text-sm font-medium mb-1 sm:mb-2"
+          htmlFor="email"
+        >
+          Email Address
+        </label>
+        <input
+          disabled={isLogin}
+          type="email"
+          id="email"
+          className="w-full px-4 py-2.5 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div className="mb-4 sm:mb-5">
+        <label
+          className="block text-gray-700 text-sm font-medium mb-1 sm:mb-2"
+          htmlFor="password"
+        >
+          Password
+        </label>
+        <input
+          disabled={isLogin}
+          type="password"
+          id="password"
+          className="w-full px-4 py-2.5 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <button
+        disabled={isLogin}
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2.5 sm:py-3 px-4 text-sm sm:text-base rounded-lg sm:rounded-xl hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg"
+      >
+        {isLogin ? (
+          <div className="flex items-center justify-center gap-x-2 sm:gap-x-3">
+            <div className="border-2 border-t-2 border-dashed animate-spin h-5 w-5 sm:h-6 sm:w-6 rounded-full" />
+            <span>Logging In</span>
+          </div>
+        ) : (
+          'Login'
+        )}
+      </button>
+    </form>
+
+    <div className="mt-4 sm:mt-6 space-y-2">
+      <button
+        onClick={handleAdminLogin}
+        className="w-full text-sm sm:text-base bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition duration-200"
+      >
+        Demo Admin Login
+      </button>
+      <button
+        onClick={handleStaffLogin}
+        className="w-full text-sm sm:text-base bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition duration-200"
+      >
+        Demo Staff Login
+      </button>
     </div>
+  </div>
+</div>
   );
 };
 

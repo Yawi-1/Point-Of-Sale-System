@@ -14,14 +14,13 @@ import StaffSales from "./pages/Staff/StaffSales";
 import StaffTopbar from "./pages/Staff/StaffTopbar";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import  { Toaster } from 'react-hot-toast';
-
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const stripePromise = loadStripe(
     "pk_test_51QOighF2m1LCsEM5wmfGo2q4TRiJrlgi5gnCJLh5OCQLo2wOmXNQ0xNqwRWvIOnWh0772BDo8BPz8xxmTFEZ3uk400x6mAKNcP"
   );
-  const { user,isCheck } = useAuth();
+  const { user, isCheck } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -39,15 +38,22 @@ function App() {
 
   return (
     <>
-    {isCheck && <div className="w-full flex items-center justify-center h-screen bg-blue-400">
-      <h1 className="text-4xl animate-bounce text-white" >Loading...</h1>
-      </div>
-      }
+      {isCheck && (
+        <div className="w-full fixed inset-0 flex items-center justify-center h-screen bg-blue-400">
+          <h1 className="text-4xl animate-bounce text-white">Loading...</h1>
+        </div>
+      )}
       <Elements stripe={stripePromise}>
         <div className="flex h-screen bg-gray-100">
-          {user?.role === "admin" && <Sidebar isOpen={isSidebarOpen} />}
+          {user?.role === "admin" && (
+            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+          )}
 
-          <div className="flex flex-col flex-1 overflow-hidden">
+          <div
+            className={`flex flex-col flex-1 overflow-hidden 
+          
+             transition-margin duration-300`}
+          >
             {user?.role === "admin" && <Topbar toggleSidebar={toggleSidebar} />}
             {user?.role === "staff" && <StaffTopbar />}
             <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4">
@@ -88,7 +94,7 @@ function App() {
           </div>
         </div>
       </Elements>
-      <Toaster/>
+      <Toaster />
     </>
   );
 }
