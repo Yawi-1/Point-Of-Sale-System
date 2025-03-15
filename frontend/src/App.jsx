@@ -15,6 +15,7 @@ import StaffTopbar from "./pages/Staff/StaffTopbar";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Toaster } from "react-hot-toast";
+import Order from "./pages/Staff/Order";
 
 function App() {
   const stripePromise = loadStripe(
@@ -83,6 +84,7 @@ function App() {
                     }
                   />
                   <Route path="/inventory" element={<Inventory />} />
+                  <Route path="/cart" element={<Order />} />
                   <Route
                     path="/users"
                     element={user?.role === "admin" && <Users />}

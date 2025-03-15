@@ -6,7 +6,7 @@ import {useAdmin} from '../../context/AdminContext'
 
 const Users = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const {allUsers,loading,setAllUsers} = useAdmin();
+  const {allUsers,setAllUsers} = useAdmin();
   const [showModal,setShowModal] = useState(false)
   
 
@@ -29,6 +29,22 @@ const Users = () => {
           <h1 className="text-2xl font-semibold text-gray-800">User Management</h1>
           <p className="text-gray-500">Manage system users and permissions</p>
         </div>
+        <div>
+            <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
+            <p className="text-2xl font-semibold text-gray-800">{allUsers.length}</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Admins</h3>
+            <p className="text-2xl font-semibold text-gray-800">
+              {allUsers.filter(user => user.role === 'admin').length}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Staff</h3>
+            <p className="text-2xl font-semibold text-gray-800">
+              {allUsers.filter(user => user.role === 'staff').length}
+            </p>
+          </div> 
         <div className="mt-4 md:mt-0">
           <button onClick={()=>setShowModal(true)} className="flex items-center justify-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-700 transition-colors">
             <FaPlus className="mr-2" />
@@ -53,30 +69,8 @@ const Users = () => {
         </div>
       </div>
       
-      {/* User Stats */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
-            <p className="text-2xl font-semibold text-gray-800">{allUsers.length}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Admins</h3>
-            <p className="text-2xl font-semibold text-gray-800">
-              {allUsers.filter(user => user.role === 'admin').length}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Staff</h3>
-            <p className="text-2xl font-semibold text-gray-800">
-              {allUsers.filter(user => user.role === 'staff').length}
-            </p>
-          </div> 
-        </div>
-      </div>
       
       {/* Users Table */}
-      {loading && <p>Loading ....</p>}
       <UsersTable 
         users={filteredUsers}  
         setAllUsers={setAllUsers}

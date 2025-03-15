@@ -5,13 +5,11 @@ import Order from './Order';
 import ProductList from './ProductList';
 const StaffDashboard = () => {
   const {allProducts} = useAdmin();
-  const { selectedProducts,totalAmount, setSelectedProducts,handleCheckOut} = useStaff();
+  const { selectedProducts,setSelectedProducts} = useStaff();
   return (
-    <div className="grid grid-cols-1  gap-4">
+    <div className="">
       {/* Products Grid */}
        <ProductList products={allProducts} selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} />
-         {/* Order Summary  */}
-         {/* <Order total = {totalAmount} handleCheckOut={handleCheckOut} selectedProducts={selectedProducts}/> */}
          
     </div>
   );

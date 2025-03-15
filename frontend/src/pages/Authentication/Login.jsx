@@ -22,7 +22,7 @@ const Login = () => {
     setLogin(true);
     try {
       const response = await axios.post(
-        "https://point-of-sale-srz7.onrender.com/api/auth/login",
+        "http://localhost:3000/api/auth/login",
         {
           email,
           password,
