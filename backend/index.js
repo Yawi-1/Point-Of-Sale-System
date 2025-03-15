@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Update CORS configuration to:
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://pos11.netlify.app'],
+    origin: ['http://localhost:5173', 'https://pos11.netlify.app','http://192.168.31.233:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true

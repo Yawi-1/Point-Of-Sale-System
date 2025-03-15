@@ -61,7 +61,7 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
     </div>
   </div>
   
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 overflow-auto h-[36rem] custom-scrollbar">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 overflow-auto h-[36rem] custom-scrollbar">
       {products
         ?.filter(product => 
           product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -70,7 +70,7 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
         .map((item) => (
           <div
             key={item._id}
-            className="bg-white group md:h-[20rem] relative p-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ease-in-out border border-gray-50 hover:border-blue-100"
+            className="overflow-hidden bg-white group md:h-[20rem] relative p-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ease-in-out border border-gray-50 hover:border-blue-100"
           >
             {/* Hover overlay effect - MOVED TO TOP */}
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 transition-all rounded-xl pointer-events-none" />
