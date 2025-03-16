@@ -6,25 +6,30 @@ import OrderTable from "../../components/Order/OrderTable";
 import toast from "react-hot-toast";
 
 const Order = () => {
+  // Customer state management
   const [customer, setCustomer] = useState({
     name: "",
     phone: "",
     email: "",
   });
 
+  // Payment status state
   const [paymentStatus, setPaymentStatus] = useState({
     error: "",
     isSubmitting: false,
     isSuccess: false,
   });
 
+  // Context hooks for products and total
   const { selectedProducts, setSelectedProducts, totalAmount } = useStaff();
 
+  // Handle customer form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCustomer((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Form validation logic
   const validateForm = () => {
     if (selectedProducts.length === 0) return "Please select products";
     if (!customer.name.trim()) return "Please enter your name";
@@ -32,17 +37,25 @@ const Order = () => {
     return null;
   };
 
+  // Main checkout handler
   const handleCheckOut = async () => {
+    // Validate form inputs
     const error = validateForm();
     if (error) {
       toast.error(error);
       return;
     }
 
+    // Validate total amount
+    if (totalAmount <= 0) {
+      toast.error("Invalid order total");
+      return;
+    }
+
     setPaymentStatus((prev) => ({ ...prev, isSubmitting: true, error: "" }));
 
     try {
-      // Create Razorpay order
+      // Step 1: Create Razorpay order
       const orderResponse = await fetch(
         "http://localhost:3000/api/sale/pay",
         {
@@ -52,80 +65,111 @@ const Order = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
-            amount: totalAmount * 100, 
+            amount: totalAmount , 
             currency: "INR",
           }),
         }
       );
+
+      // Handle order creation errors
+      if (!orderResponse.ok) {
+        const errorData = await orderResponse.json();
+        throw new Error(errorData.message || 'Failed to create payment order');
+      }
+
       const orderData = await orderResponse.json();
 
-      // Initialize Razorpay payment
+      // Step 2: Initialize Razorpay payment
       const options = {
         key: import.meta.env.VITE_APP_RAZORPAY_KEY_ID,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Point Of Sale ",
+        amount: orderData.data.amount,
+        currency: orderData.data.currency,
+        name: "Point Of Sale",
         description: "Purchase Transaction",
-        order_id: orderData.id,
+        order_id: orderData.data.id, 
         handler: async (response) => {
-          // Verify payment signature
-          const verificationResponse = await fetch(
-            "http://localhost:3000/api/sale/verify",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-              }),
+          try {
+            // Validate payment response parameters
+            if (!response.razorpay_payment_id || 
+                !response.razorpay_order_id || 
+                !response.razorpay_signature) {
+              throw new Error("Payment failed - missing transaction IDs");
             }
-          );
 
-          const verificationData = await verificationResponse.json();
-          console.log(verificationData)
+            // Step 3: Verify payment signature
+            const verificationResponse = await fetch(
+              "http://localhost:3000/api/sale/verify",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({
+                  // Match parameter names with backend expectations
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              }
+            );
 
-          if (verificationData.success) {
-            // Save sale record
-            const saleData = {
-              paymentId: response.razorpay_payment_id,
-              totalAmount,
-              customerName: customer.name,
-              customerPhone: customer.phone,
-              customerEmail: customer.email,
-              products: selectedProducts,
-            };
+            // Handle verification errors
+            if (!verificationResponse.ok) {
+              const errorData = await verificationResponse.json();
+              throw new Error(errorData.message || 'Verification failed');
+            }
 
-            await fetch("http://localhost:3000/api/sale/add", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              body: JSON.stringify(saleData),
-            });
+            const verificationData = await verificationResponse.json();
 
-            // Update state and clear cart
-            setPaymentStatus((prev) => ({ ...prev, isSuccess: true }));
-            toast.success("Payment successful!");
-            localStorage.removeItem("cartItems");
-            setSelectedProducts([]);
-            setCustomer({ name: "", phone: "", email: "" });
-          } else {
-            toast.error("Payment verification failed");
+            if (verificationData.success) {
+              // Step 4: Save sale record
+              const saleData = {
+                paymentId: response.razorpay_payment_id,
+                totalAmount,
+                customerName: customer.name,
+                customerPhone: customer.phone,
+                customerEmail: customer.email,
+                products: selectedProducts
+              };
+
+              const saleResponse = await fetch("http://localhost:3000/api/sale/add", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(saleData),
+              });
+
+              // Handle sale record errors
+              if (!saleResponse.ok) {
+                const errorData = await saleResponse.json();
+                throw new Error(errorData.message || 'Failed to save sale record');
+              }
+
+              // Success handling
+              setPaymentStatus((prev) => ({ ...prev, isSuccess: true }));
+              toast.success("Payment successful!");
+              localStorage.removeItem("cartItems");
+              setSelectedProducts([]);
+              setCustomer({ name: "", phone: "", email: "" });
+            } else {
+              throw new Error("Payment verification failed");
+            }
+          } catch (error) {
+            console.log(error)
+            toast.error(error.message);
+            setPaymentStatus(prev => ({ ...prev, isSubmitting: false }));
           }
         },
+        // Prefill customer details
         prefill: {
           name: customer.name,
           email: customer.email,
           contact: customer.phone,
         },
-        theme: {
-          color: "#3399cc",
-        },
+        theme: { color: "#3399cc" },
         modal: {
           ondismiss: () => {
             setPaymentStatus((prev) => ({ ...prev, isSubmitting: false }));
@@ -137,27 +181,22 @@ const Order = () => {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
-      console.log(error)
+      console.error("Payment error:", error);
       toast.error(error.message || "Payment processing failed");
-      setPaymentStatus((prev) => ({
+      setPaymentStatus(prev => ({
         ...prev,
         isSubmitting: false,
         error: error.message,
       }));
-    } finally {
-      setPaymentStatus((prev) => ({ ...prev, isSubmitting: false }));
     }
   };
 
+  // Order cancellation handler
   const handleCancel = () => {
     if (window.confirm("Are you sure you want to cancel the order?")) {
       localStorage.removeItem("cartItems");
       setSelectedProducts([]);
-      setCustomer({
-        name: "",
-        phone: "",
-        email: "",
-      });
+      setCustomer({ name: "", phone: "", email: "" });
     }
   };
 
@@ -189,6 +228,7 @@ const Order = () => {
         </>
       )}
 
+      {/* Payment success modal */}
       {paymentStatus.isSuccess && (
         <PaymentSuccess
           customer={customer}
@@ -197,11 +237,7 @@ const Order = () => {
           onClose={() => {
             localStorage.removeItem("cartItems");
             setSelectedProducts([]);
-            setCustomer({
-              name: "",
-              email: "",
-              phone: "",
-            });
+            setCustomer({ name: "", email: "", phone: "" });
             window.location.href = "/";
           }}
         />

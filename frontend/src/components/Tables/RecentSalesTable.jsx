@@ -1,6 +1,7 @@
 import React from 'react';
 
 const RecentSalesTable = ({ allSales }) => {
+  console.log(allSales)
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200 ">
@@ -31,7 +32,7 @@ const RecentSalesTable = ({ allSales }) => {
             {allSales && allSales?.map((sale) => (
               <tr key={sale._id} className='hover:bg-gray-200'>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {sale.paymentId.startsWith('pi') ? sale.paymentId.slice(3):paymentId}
+                  {sale.paymentId.slice(4)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {sale.customerName}

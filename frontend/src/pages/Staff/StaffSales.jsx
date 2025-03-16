@@ -180,7 +180,7 @@ const StaffSales = () => {
               {filteredSales.map((sale) => (
                 <tr key={sale._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {sale.paymentId?.slice(3) || sale._id}
+                    {sale.paymentId?.slice(4) || sale._id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {sale.customerName}

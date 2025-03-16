@@ -10,7 +10,7 @@ dotenv.config();
 // Add a Razor Pay Gateway
 const razorpayClient = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_SECRET_KEY,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 export const razorpayPayement = async (req,res) => {
@@ -49,7 +49,7 @@ export const verifyPayment = async (req, res) => {
 
     // 2. Generate signature for verification
     const generatedSignature = crypto
-      .createHmac('sha256', import.meta.env.RAZORPAY_KEY_SECRET)
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest('hex');
 

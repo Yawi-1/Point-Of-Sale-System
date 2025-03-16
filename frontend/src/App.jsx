@@ -44,7 +44,6 @@ function App() {
           <h1 className="text-4xl animate-bounce text-white">Loading...</h1>
         </div>
       )}
-      <Elements stripe={stripePromise}>
         <div className="flex h-screen bg-gray-100">
           {user?.role === "admin" && (
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -95,7 +94,6 @@ function App() {
             </main>
           </div>
         </div>
-      </Elements>
       <Toaster />
     </>
   );
