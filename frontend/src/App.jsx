@@ -12,15 +12,10 @@ import Login from "./pages/Authentication/Login";
 import StaffDashboard from "./pages/Staff/StaffDashboard";
 import StaffSales from "./pages/Staff/StaffSales";
 import StaffTopbar from "./pages/Staff/StaffTopbar";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { Toaster } from "react-hot-toast";
 import Order from "./pages/Staff/Order";
 
 function App() {
-  const stripePromise = loadStripe(
-    "pk_test_51QOighF2m1LCsEM5wmfGo2q4TRiJrlgi5gnCJLh5OCQLo2wOmXNQ0xNqwRWvIOnWh0772BDo8BPz8xxmTFEZ3uk400x6mAKNcP"
-  );
   const { user, isCheck } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

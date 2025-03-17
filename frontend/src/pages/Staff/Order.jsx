@@ -151,9 +151,6 @@ const Order = () => {
               // Success handling
               setPaymentStatus((prev) => ({ ...prev, isSuccess: true }));
               toast.success("Payment successful!");
-              localStorage.removeItem("cartItems");
-              setSelectedProducts([]);
-              setCustomer({ name: "", phone: "", email: "" });
             } else {
               throw new Error("Payment verification failed");
             }

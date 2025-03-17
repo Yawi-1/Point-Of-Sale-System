@@ -4,14 +4,16 @@ import { FaBars, FaTimes } from "react-icons/fa"; // Importing icons for hamburg
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useAuth } from "../../context/AuthContext";
 import { useStaff } from "../../context/StaffContext";
+import UserInfoModal from "../../components/Modals/UserInfoModal";
+
 const StaffTopbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to control the menu visibility
-
+  const [isModal, setModal] = useState(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen); // Toggle the menu visibility
   };
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { selectedProducts } = useStaff();
 
   return (
@@ -22,15 +24,15 @@ const StaffTopbar = () => {
       <div className="lg:hidden flex items-center gap-x-4">
         <Link to="/cart" className="relative">
           <AiOutlineShoppingCart className="text-white" size={24} />
-          <span className="absolute -top-4 left-2">{selectedProducts?.length || 0}</span>
+          <span className="absolute -top-4 left-2">
+            {selectedProducts?.length || 0}
+          </span>
         </Link>
         <button onClick={toggleMenu}>
           {isMenuOpen ? (
-            <FaTimes className="text-white" size={24} /> // Show close icon when menu is open
+            <FaTimes className="text-white" size={24} /> 
           ) : (
-            <>
-              <FaBars className="text-white" size={24} />
-            </>
+            <FaBars className="text-white" size={24} />
           )}
         </button>
       </div>
@@ -55,18 +57,22 @@ const StaffTopbar = () => {
             {selectedProducts?.length || 0}
           </span>
         </Link>
-        <div className="relative group">
-          <img
-            src="https://ui-avatars.com/api/?name=Staff+User&background=0D8ABC&color=fff"
-            alt="User"
-            className="h-8 w-8 rounded-full cursor-pointer"
-          />
-          <div className="absolute -right-2 hover:bg-gray-200 top-6 mt-2 hidden w-24 bg-white px-3 py-1 text-sm text-gray-700 shadow-md rounded group-hover:block">
-            <button className=" w-full text-center h-full " onClick={logout}>
-              Log out
-            </button>
-          </div>
-        </div>
+
+        {/* User Avatar with hover effect */}
+        <img
+          onClick={() => setModal(true)}
+          src="https://ui-avatars.com/api/?name=Staff+User&background=0D8ABC&color=fff"
+          alt="User"
+          className="h-8 w-8 rounded-full cursor-pointer"
+        />
+
+        {/* Modal shown only on hover of the image */}
+        <UserInfoModal 
+        isOpen={isModal}
+        user={user} 
+        logout={logout}
+        onClose = {()=>setModal(false)}
+         />
       </div>
 
       {/* Mobile Menu */}
