@@ -8,7 +8,7 @@ const InventoryTable = ({ products,setAllProducts }) => {
 
 
   const handleDelete = async () => {
-    const response = await fetch(`http://localhost:3000/api/product/delete/${id}`,{
+    const response = await fetch(`https://point-of-sale-srz7.onrender.com/api/product/delete/${id}`,{
       method: 'DELETE'
     })
     const data = await response.json();

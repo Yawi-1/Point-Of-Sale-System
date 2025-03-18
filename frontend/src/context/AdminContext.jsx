@@ -13,10 +13,10 @@ export const AdminProvider = ({ children }) => {
   // Memoize options to prevent infinite re-fetch
   const options = useMemo(() => ({}), []);
 
-  const { data:users } = useFetch("http://localhost:3000/api/auth/allUsers", options, token);
-  const {data:products} = useFetch('http://localhost:3000/api/product/all',options);
-  const {data:Sales} = useFetch('http://localhost:3000/api/sale/all',options);
-  const {data:staffSales} = useFetch('http://localhost:3000/api/sale/each',options,token);
+  const { data:users } = useFetch("https://point-of-sale-srz7.onrender.com/api/auth/allUsers", options, token);
+  const {data:products} = useFetch('https://point-of-sale-srz7.onrender.com/api/product/all',options);
+  const {data:Sales} = useFetch('https://point-of-sale-srz7.onrender.com/api/sale/all',options);
+  const {data:staffSales} = useFetch('https://point-of-sale-srz7.onrender.com/api/sale/each',options,token);
 
   const totalSales = allSales?.reduce((sum, sale) => sum + sale.totalAmount, 0);
 

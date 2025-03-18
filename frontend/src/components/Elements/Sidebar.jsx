@@ -69,7 +69,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </ul>
         </div>
 
-        <div className="absolute bottom-0 w-full border-t border-gray-700">
+        <div className="absolute bottom-10 md:bottom-0 w-full border-t border-gray-700">
           <button
             onClick={logout}
             className="flex items-center w-full px-4 py-3 text-gray-300 hover:bg-gray-700 transition-colors duration-200"

@@ -28,10 +28,11 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
 
   // Handle Add to Cart button click
   const handleAddToCart = (product) => {
-    if (product.productQuantity === 0) {
+    if (product.productQuantity == 0) {
       toast("Product is out of stock");
       return;
     }
+    console.log(product)
 
     // Create a copy of the selectedProducts array
     const updatedProducts = [...selectedProducts];
@@ -43,7 +44,7 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
     if (existingProductIndex !== -1) {
       // If product exists, increase its quantity
       if (
-        updatedProducts[existingProductIndex].quantity ===
+        updatedProducts[existingProductIndex].quantity ==
         product.productQuantity
       ) {
         toast(`Only ${product.productQuantity} quantity available`);
@@ -105,7 +106,7 @@ const ProductList = ({ products, selectedProducts, setSelectedProducts }) => {
             </select>
             {categoryFilter !== "all" && (
               <button
-                className="bg-gray-400 px-4 py-2 rounded-lg text-white hover:bg-gray-300"
+                className="bg-gray-400 px-4 py-2 rounded-lg md:my-0 my-2 text-white hover:bg-gray-300"
                 onClick={() => setCategoryFilter("all")}
               >
                 Reset

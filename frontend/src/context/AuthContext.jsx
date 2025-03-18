@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
       }
 
       try {
-        const response = await axios.get('http://localhost:3000/api/auth/me', {
+        const response = await axios.get('https://point-of-sale-srz7.onrender.com/api/auth/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUser(response.data.user);

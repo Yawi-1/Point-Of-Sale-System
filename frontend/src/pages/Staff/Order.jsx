@@ -4,6 +4,8 @@ import PaymentSuccess from "../../components/Payment/PaymentSuccess";
 import CustomerForm from "../../components/Order/CustomerForm";
 import OrderTable from "../../components/Order/OrderTable";
 import toast from "react-hot-toast";
+import { TiTick } from "react-icons/ti";
+import VerifyPayment from "../../components/Payment/VerifyPayment";
 
 const Order = () => {
   // Customer state management
@@ -17,6 +19,7 @@ const Order = () => {
   const [paymentStatus, setPaymentStatus] = useState({
     error: "",
     isSubmitting: false,
+    isVerify: false,
     isSuccess: false,
   });
 
@@ -57,7 +60,7 @@ const Order = () => {
     try {
       // Step 1: Create Razorpay order
       const orderResponse = await fetch(
-        "http://localhost:3000/api/sale/pay",
+        "https://point-of-sale-srz7.onrender.com/api/sale/pay",
         {
           method: "POST",
           headers: {
@@ -65,7 +68,7 @@ const Order = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
-            amount: totalAmount , 
+            amount: totalAmount,
             currency: "INR",
           }),
         }
@@ -74,7 +77,7 @@ const Order = () => {
       // Handle order creation errors
       if (!orderResponse.ok) {
         const errorData = await orderResponse.json();
-        throw new Error(errorData.message || 'Failed to create payment order');
+        throw new Error(errorData.message || "Failed to create payment order");
       }
 
       const orderData = await orderResponse.json();
@@ -86,19 +89,22 @@ const Order = () => {
         currency: orderData.data.currency,
         name: "Point Of Sale",
         description: "Purchase Transaction",
-        order_id: orderData.data.id, 
+        order_id: orderData.data.id,
         handler: async (response) => {
           try {
             // Validate payment response parameters
-            if (!response.razorpay_payment_id || 
-                !response.razorpay_order_id || 
-                !response.razorpay_signature) {
+            if (
+              !response.razorpay_payment_id ||
+              !response.razorpay_order_id ||
+              !response.razorpay_signature
+            ) {
               throw new Error("Payment failed - missing transaction IDs");
             }
+            setPaymentStatus((prev) => ({ ...prev, isVerify: true }));
 
             // Step 3: Verify payment signature
             const verificationResponse = await fetch(
-              "http://localhost:3000/api/sale/verify",
+              "https://point-of-sale-srz7.onrender.com/api/sale/verify",
               {
                 method: "POST",
                 headers: {
@@ -106,7 +112,6 @@ const Order = () => {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify({
-                  // Match parameter names with backend expectations
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_signature: response.razorpay_signature,
@@ -117,7 +122,8 @@ const Order = () => {
             // Handle verification errors
             if (!verificationResponse.ok) {
               const errorData = await verificationResponse.json();
-              throw new Error(errorData.message || 'Verification failed');
+              setPaymentStatus((prev) => ({ ...prev, isVerify: false }));
+              throw new Error(errorData.message || "Verification failed");
             }
 
             const verificationData = await verificationResponse.json();
@@ -130,22 +136,25 @@ const Order = () => {
                 customerName: customer.name,
                 customerPhone: customer.phone,
                 customerEmail: customer.email,
-                products: selectedProducts
+                products: selectedProducts,
               };
 
-              const saleResponse = await fetch("http://localhost:3000/api/sale/add", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(saleData),
-              });
+              const saleResponse = await fetch(
+                "https://point-of-sale-srz7.onrender.com/api/sale/add",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                  body: JSON.stringify(saleData),
+                }
+              );
 
               // Handle sale record errors
               if (!saleResponse.ok) {
                 const errorData = await saleResponse.json();
-                throw new Error(errorData.message || 'Failed to save sale record');
+                throw new Error(errorData.message || "Failed to save sale record");
               }
 
               // Success handling
@@ -155,12 +164,11 @@ const Order = () => {
               throw new Error("Payment verification failed");
             }
           } catch (error) {
-            console.log(error)
+            console.log(error);
             toast.error(error.message);
-            setPaymentStatus(prev => ({ ...prev, isSubmitting: false }));
+            setPaymentStatus((prev) => ({ ...prev, isSubmitting: false }));
           }
         },
-        // Prefill customer details
         prefill: {
           name: customer.name,
           email: customer.email,
@@ -180,7 +188,7 @@ const Order = () => {
     } catch (error) {
       console.error("Payment error:", error);
       toast.error(error.message || "Payment processing failed");
-      setPaymentStatus(prev => ({
+      setPaymentStatus((prev) => ({
         ...prev,
         isSubmitting: false,
         error: error.message,
@@ -222,6 +230,10 @@ const Order = () => {
               {paymentStatus.isSubmitting ? "Processing..." : "Checkout"}
             </button>
           </div>
+
+          {paymentStatus.isVerify && (
+            <VerifyPayment/>
+          )}
         </>
       )}
 
@@ -234,7 +246,6 @@ const Order = () => {
           onClose={() => {
             localStorage.removeItem("cartItems");
             setSelectedProducts([]);
-            setCustomer({ name: "", email: "", phone: "" });
             window.location.href = "/";
           }}
         />

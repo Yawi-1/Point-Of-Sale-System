@@ -16,7 +16,7 @@ const EmptyCart = () => {
         ahead & explore top categories.
       </p>
       <Link to="/">
-        <button className="bg-blue-600 px-6 py-2 text-white rounded-md text-sm sm:text-base md:text-lg">
+        <button className="hover:bg-blue-500 bg-blue-600 px-6 py-2 text-white rounded-md text-sm sm:text-base md:text-lg">
           Shop Our Products
         </button>
       </Link>
